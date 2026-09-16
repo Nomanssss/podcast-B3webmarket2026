@@ -1,0 +1,398 @@
+/*******************************************************************************
+ * Infos
+*******************************************************************************/
+
+/**
+ * Name: Lesson
+ * Type: Component
+ * Description:
+ *   Gabarit d'une leçon : barre latérale de navigation + colonne de
+ *   contenu. La largeur de lecture vient de `.o-wrapper--medium`, le
+ *   rythme des listes de `.o-stack`, la grille du pager de `.o-grid--halves`.
+ *
+ *   La barre latérale porte le symbole de la marque en filigrane, débordant
+ *   de son bord droit - même parti pris que `.c-header__content` : un décor
+ *   posé dans un pseudo-élément, donc hors du HTML et hors de portée des
+ *   lecteurs d'écran.
+**/
+
+/*******************************************************************************
+ * Utils
+*******************************************************************************/
+
+@use "sass-rem" as rem;
+@use "../settings/colors";
+@use "../settings/effects";
+@use "../settings/spacing";
+@use "../settings/typography";
+@use "../tools/fonts";
+@use "../tools/logo";
+@use "../tools/mq" as mq;
+
+/*******************************************************************************
+ * Shell
+*******************************************************************************/
+
+.c-lesson {
+  display: flex;
+  flex-direction: column;
+
+  @include mq.mq($from: medium) {
+    flex-direction: row;
+  }
+}
+
+/**
+ * Le pied de page colle à la mise en page d'une leçon.
+ *
+ * `.c-footer` se réserve une marge haute, qui aère l'accueil et les pages
+ * annexes. Ici elle laisserait un blanc sous la barre latérale, dont le
+ * fond et le filet s'arrêteraient avant le pied de page - un décrochement
+ * qu'on remarque immédiatement. La règle vise donc le seul cas où le pied
+ * de page suit directement les deux colonnes.
+**/
+.c-lesson + .c-footer {
+  margin-top: 0;
+}
+
+/*******************************************************************************
+ * Sidebar
+*******************************************************************************/
+
+.c-lesson__sidebar {
+  position: relative;
+  flex-shrink: 0;
+  background: colors.get("surface");
+  border-bottom: rem.convert(1px) solid colors.get("border");
+
+  // Le filigrane déborde du bord : sans quoi il pousserait la page en
+  // largeur. « clip » plutôt que « hidden » - on ne veut pas d'un
+  // conteneur défilable sur cet axe, seulement une découpe.
+  overflow: clip;
+  // Le pseudo-élément est en z-index négatif : sans contexte
+  // d'empilement propre, il passerait DERRIÈRE le fond de la barre.
+  isolation: isolate;
+
+  // Le sommaire se replie SOUS « medium », et seulement quand le script a
+  // posé « js » sur <html>. Sans script, rien de tout ceci ne s'applique :
+  // le sommaire reste déplié, ce qui est le bon repli de secours.
+  @include mq.mq($until: medium) {
+    :root.js & .c-lesson__nav {
+      display: none;
+    }
+
+    :root.js &.is-nav-open .c-lesson__nav {
+      display: block;
+    }
+  }
+
+  @include mq.mq($from: medium) {
+    width: rem.convert(288px);
+    border-bottom: 0;
+    border-right: rem.convert(1px) solid colors.get("border");
+
+    // Le filigrane ne vit qu'ici : replié en burger, la barre ne fait plus
+    // qu'une centaine de pixels de haut, où une marque de 176 px serait
+    // tranchée par le haut - le défaut qu'on vient justement de corriger.
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      // Un SEUL bord qui coupe, le droit. Débordant aussi par le bas, la
+      // marque était tranchée sur deux côtés et ne se lisait plus comme un
+      // logo - juste comme une forme claire posée là.
+      right: rem.convert(-52px);
+      bottom: spacing.get("xl");
+      width: rem.convert(176px);
+      aspect-ratio: logo.$logo-ratio;
+      background-image: logo.logo(colors.$primary);
+      background-repeat: no-repeat;
+      background-size: contain;
+      opacity: 0.06;
+      transform: rotate(-15deg);
+    }
+  }
+}
+
+  // Le collant vit ICI et non sur l'<aside>.
+  //
+  // L'aside est un item flex : étiré par défaut, il fait toute la hauteur
+  // de la leçon, et son filet rejoint donc le pied de page. Mais un
+  // élément aussi haut que son parent ne colle à rien - « sticky » n'a
+  // d'effet que sur un élément plus court que son conteneur. D'où ce
+  // conteneur intérieur : lui reste court, et suit le défilement.
+  //
+  // Il porte aussi le padding : le collant doit emmener ses marges avec
+  // lui, et la zone défilante les inclure.
+  .c-lesson__sidebar-inner {
+    padding: spacing.get("lg");
+
+    @include mq.mq($from: medium) {
+      position: sticky;
+      top: 0;
+      // Plus haute que l'écran, la navigation défile en interne plutôt que
+      // de dépasser. Une hauteur MAXIMALE, pas fixe : une navigation courte
+      // ne doit pas réserver tout l'écran.
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+  }
+
+  .c-lesson__burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: rem.convert(40px);
+    height: rem.convert(40px);
+    padding: 0;
+    color: colors.get("text");
+    background: transparent;
+    border: rem.convert(1px) solid colors.get("border");
+    border-radius: spacing.radius("sm");
+    cursor: pointer;
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background-color: colors.get("surface-muted");
+    }
+
+    @include mq.mq($until: medium) {
+      :root.js & {
+        display: inline-flex;
+      }
+    }
+  }
+
+    // Trois barres dessinées en CSS : une icône de trois traits ne mérite
+    // ni fichier ni SVG dans le HTML. La barre du milieu est l'élément
+    // lui-même, les deux autres ses pseudo-éléments.
+    .c-lesson__burger-icon {
+      position: relative;
+      display: block;
+      width: rem.convert(18px);
+      height: rem.convert(2px);
+      background: currentColor;
+      border-radius: rem.convert(999px);
+      transition: background-color 150ms ease;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: currentColor;
+        border-radius: inherit;
+        transition: transform 150ms ease;
+      }
+
+      &::before {
+        transform: translateY(rem.convert(-6px));
+      }
+
+      &::after {
+        transform: translateY(rem.convert(6px));
+      }
+    }
+
+    // Ouvert : la barre du milieu s'efface, les deux autres se croisent.
+    .is-nav-open .c-lesson__burger-icon {
+      background: transparent;
+
+      &::before {
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        transform: rotate(-45deg);
+      }
+    }
+
+  .c-lesson__home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.get("2xs");
+    font-size: typography.size("sm");
+    font-weight: typography.$semibold;
+    color: colors.get("text");
+    text-decoration: none;
+    transition: color 150ms ease;
+
+    &:hover {
+      color: colors.get("primary-hover");
+    }
+  }
+
+  .c-lesson__progress {
+    margin-block: spacing.get("md");
+    padding-block: spacing.get("md");
+    border-block: rem.convert(1px) solid colors.get("border");
+  }
+
+  .c-lesson__module {
+    margin-bottom: spacing.get("lg");
+  }
+
+    .c-lesson__module-name {
+      @include fonts.eyebrow;
+      margin-bottom: spacing.get("sm");
+      color: colors.get("text");
+    }
+
+      .c-lesson__nav-link {
+        display: flex;
+        align-items: center;
+        gap: spacing.get("xs");
+        padding: spacing.get("xs") spacing.get("sm");
+        font-size: typography.size("sm");
+        line-height: 1.375;
+        color: inherit;
+        text-decoration: none;
+        border-radius: spacing.radius("sm");
+        transition: background-color 150ms ease, color 150ms ease;
+
+        &:not(.c-lesson__nav-link--locked) {
+          &:hover {
+            background-color: colors.get("surface-muted");
+          }
+
+          &.is-completed:not([aria-current]) {
+            background-color: colors.get("success-soft");
+
+            &:hover {
+              background-color: color-mix(in srgb, #{colors.get("success")} 18%, transparent);
+            }
+          }
+        }
+
+        // Leçon courante.
+        &[aria-current="page"] {
+          font-weight: typography.$semibold;
+          color: colors.get("primary");
+          background-color: colors.get("primary-soft");
+        }
+      }
+
+        // Le titre occupe la place restante, la coche est repoussée à droite :
+        // tous les titres démarrent ainsi au même endroit, coche ou pas.
+        .c-lesson__nav-title {
+          flex: 1 1 auto;
+        }
+
+        .c-lesson__check {
+          flex-shrink: 0;
+          color: colors.get("success");
+        }
+
+        .c-lesson__nav-link--locked {
+          color: colors.get("text-muted");
+        }
+
+        .c-lesson__lock {
+          flex-shrink: 0;
+          font-size: 0.8em;
+          opacity: 0.7;
+        }
+
+/*******************************************************************************
+ * Main
+*******************************************************************************/
+
+.c-lesson__main {
+  flex: 1;
+  min-width: 0;
+}
+
+  .c-lesson__cover {
+    display: block;
+    width: 100%;
+    max-height: rem.convert(360px);
+    object-fit: cover;
+  }
+
+  .c-lesson__article {
+    padding-block: spacing.get("xl");
+
+    @include mq.mq($from: medium) {
+      --gutter: #{spacing.get("xl")};
+    }
+  }
+
+    .c-lesson__header {
+      margin-bottom: spacing.get("xl");
+      padding-bottom: spacing.get("sm");
+      border-bottom: rem.convert(1px) solid colors.get("border");
+    }
+
+      .c-lesson__eyebrow {
+        @include fonts.eyebrow;
+        color: colors.get("primary");
+      }
+
+      .c-lesson__title {
+        margin-top: spacing.get("xs");
+      }
+
+    .c-lesson__complete {
+      margin-top: spacing.get("xl");
+      padding-top: spacing.get("lg");
+      border-top: rem.convert(1px) solid colors.get("border");
+    }
+
+/*******************************************************************************
+ * Pager (précédent / suivant)
+*******************************************************************************/
+
+.c-lesson__pager {
+  margin-top: spacing.get("lg");
+}
+
+  .c-lesson__pager-link {
+    display: block;
+    padding: spacing.get("md");
+    text-decoration: none;
+    background: colors.get("surface");
+    border: rem.convert(1px) solid colors.get("border");
+    border-radius: spacing.radius();
+    box-shadow: effects.shadow("sm");
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+
+    &:hover {
+      border-color: colors.get("primary");
+      box-shadow: effects.shadow("md");
+    }
+
+    &:hover .c-lesson__pager-title {
+      color: colors.get("primary");
+    }
+  }
+
+  .c-lesson__pager-link--prev {}
+
+  .c-lesson__pager-link--next {
+    text-align: right;
+  }
+
+    .c-lesson__pager-label {
+      @include fonts.eyebrow;
+      display: block;
+      color: colors.get("text-muted");
+    }
+
+    .c-lesson__pager-title {
+      display: block;
+      margin-top: spacing.get("2xs");
+      font-weight: typography.$semibold;
+      color: colors.get("text");
+    }
+
+  // Case vide du pager : inutile tant que la grille n'a qu'une colonne.
+  .c-lesson__pager-empty {
+    display: none;
+
+    @include mq.mq($from: small) {
+      display: block;
+    }
+  }
