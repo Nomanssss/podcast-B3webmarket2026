@@ -45,9 +45,7 @@ $latin-ext: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0
  * Déclarations
 *******************************************************************************/
 
-@include fonts.font-face("Google Sans", "#{$folder}google-sans-italic-latin-ext.woff2", 400 700, italic, $latin-ext);
-@include fonts.font-face("Google Sans", "#{$folder}google-sans-italic-latin.woff2", 400 700, italic, $latin);
-@include fonts.font-face("Google Sans", "#{$folder}google-sans-latin-ext.woff2", 400 700, normal, $latin-ext);
-@include fonts.font-face("Google Sans", "#{$folder}google-sans-latin.woff2", 400 700, normal, $latin);
-@include fonts.font-face("Stack Sans Headline", "#{$folder}stack-sans-headline-latin-ext.woff2", 200 700, normal, $latin-ext);
-@include fonts.font-face("Stack Sans Headline", "#{$folder}stack-sans-headline-latin.woff2", 200 700, normal, $latin);
+@include fonts.font-face("Inter", "#{$folder}inter-italic-latin-ext.woff2", 100 900, italic, $latin-ext);
+@include fonts.font-face("Inter", "#{$folder}inter-italic-latin.woff2", 100 900, italic, $latin);
+@include fonts.font-face("Inter", "#{$folder}inter-latin-ext.woff2", 100 900, normal, $latin-ext);
+@include fonts.font-face("Inter", "#{$folder}inter-latin.woff2", 100 900, normal, $latin);

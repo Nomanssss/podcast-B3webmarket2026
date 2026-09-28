@@ -1,107 +1,211 @@
 ---
-title: "Ce que fait ce template"
-module: "Module 1 - Prendre le template en main"
+title: "Le podcast : origines et état des lieux"
+module: "Module 1 - Découverte et analyse du média podcast"
 moduleOrder: 1
 order: 1
-description: "Le principe, ce qu'il n'y a délibérément pas, et les deux sorties d'un même contenu."
-cover: ../../../assets/couverture.jpg
-coverAlt: ""
-slidePoints:
-  - "Un site 100 % statique : ni serveur, ni base de données, ni compte"
-  - "Un même contenu produit deux sorties : le site du cours et un jeu de slides"
-  - "Tout part d'un seul dossier : src/content/lecons/"
-  - "Aucun menu à tenir à jour : navigation et classement sont déduits des fichiers"
+description: "D'où vient le podcast, pourquoi il s'est imposé, qui l'écoute et ce que ça change pour une marque."
 ---
 
+import Figure from '@components/Figure.astro';
 import Timeline from '@components/Timeline.astro';
+import Flashcards from '@components/Flashcards.astro';
 import Quiz from '@components/Quiz.astro';
+import penetration from '@assets/ACPM-2.png';
 
-Ce cours n'enseigne pas un sujet : il explique **l'outil avec lequel il est fabriqué**. Vous lisez le template en train de se décrire lui-même — chaque page que vous parcourez est un exemple de ce que vous pourrez écrire.
+*Avant de brancher un micro, il faut savoir dans quel média on met les pieds.
+Cette première séquence est un **état de l'art** : d'où vient le podcast, où en est-il aujourd'hui et pourquoi devrions-nous nous y intéresser ?*
 
-Si vous reprenez ce projet après quelques mois, commencez ici.
+## D'où vient le mot « podcast » ?
 
-## Le principe
-
-C'est un générateur de site **statique**. Vous écrivez vos leçons dans des fichiers texte, une commande les transforme en pages HTML, et ces pages s'hébergent n'importe où.
-
-Ce qu'il n'y a pas, et c'est volontaire :
-
-- pas de serveur applicatif ni de base de données ;
-- pas de compte, pas de mot de passe, pas d'inscription ;
-- pas de tableau de bord enseignant.
-
-La progression de l'apprenant est enregistrée **dans son propre navigateur**. C'est ce qui permet de se passer de toute cette machinerie. Le revers : elle est perdue s'il change de navigateur ou vide son cache. Dites-le-lui — c'est d'ailleurs ce que fait la phrase en pied de page d'accueil.
-
-## Deux sorties pour un même contenu
-
-C'est l'idée la plus importante à retenir. Vos leçons alimentent **deux produits distincts** :
-
-| Sortie | Ce que c'est | Commande | Où ça arrive |
-| --- | --- | --- | --- |
-| Le site | Les pages web du cours | `npm run build` | dossier `dist/` |
-| Les slides | Une présentation par leçon, et un PDF par module | `npm run slides` | dossier `slides/` |
-
-Vous pouvez très bien n'utiliser que la première. Les présentations sont un bonus, traité au module 3.
-
-## De l'écriture à la publication
+C'est un mot-valise, formé de **iPod** et de **broadcast** - « diffusion » en
+anglais. Deux objets, donc : un baladeur et une manière de diffuser.
 
 <Timeline steps={[
-  { title: "1. Vous écrivez", description: "Un fichier .mdx par leçon, dans src/content/lecons/. Du Markdown, plus quelques composants si besoin." },
-  { title: "2. Astro assemble", description: "Il lit l'en-tête de chaque fichier pour déduire l'URL, le module, le classement et la navigation. Rien à déclarer à la main." },
-  { title: "3. Le thème habille", description: "Les couleurs et les polices viennent de socle.config.json. Le même jeu de variables sert au site et aux slides." },
-  { title: "4. Vous livrez", description: "npm run bundle assemble dans dist/ le site et les présentations, prêt à déposer chez un hébergeur." },
+  {
+    title: "1999",
+    description: "Naissance de la syndication de contenu en ligne. Dans un contexte de croissance de l'accès à internet, de nouvelles formes de diffusion automatique apparaissent dont le flux RSS. Ce dernier rends possible le suivi automatique de de contenu."
+  },
+  {
+    title: "2001",
+    description: "Le premier podcast. Adam Curry et Dave Winer expérimentent une nouvelle façon de diffuser de l'audio : attacher un fichier à un flux RSS, pour qu'il arrive tout seul chez l'auditeur abonné. Le contexte technologique est porteur, c’est aussi l’année où Apple introduit son premier iPod."
+  },
+  {
+    title: "2004",
+    description: "Apparition du mot podcast. Un article fondateur du Guardian s'interroge sur la façon de nommer cette nouvelle manière de créer du contenu audio, finalement le mot-valise podcast s'impose, trouvé à partir de l'audio. La même année, Adma Curry et Dave Winer finalise un programme lié au flux RSS permettant au contenu audio de se synchroniser des contenu audio directement sur un iPod en passant par le logiciel iTunes. À la fin de cette même année, le premier fournisseur de podcasts, Libsyn.com est née."
+  },
+  {
+    title: "2005",
+    description: "Intervention d'Apple. Apple s'approprie le terme et le rend grand public en introduisant les podcasts dans la version 4.9 d'iTunes. Le mot s'impose, et avec lui l'annuaire qui va avec."
+  },
+  {
+    title: "2007",
+    description: "Lancement de l'iphone."
+  },
+  {
+    title: "2015",
+    description: "L'arrivée de la presse"
+  },
+  {
+    title: "2018",
+    description: "Le domaine se professionnalise en France : studios dédiés, exigence sonore et éditoriale, premiers modèles économiques."
+  },
+  {
+    title: "2019",
+    description: "Spotify"
+  },
+  {
+    title: "2025",
+    description: "Près de 44 % des Français écoutent des podcasts. Le format est devenu un média à part entière."
+  },
 ]} />
 
-## Où vit votre travail
+Retenez le mécanisme plutôt que les dates : le podcast n'est pas né d'une
+prouesse technique, mais de la rencontre entre **un format de fichier** (le
+RSS, déjà là) et **un objet grand public** (le baladeur, puis le téléphone).
+C'est encore vrai aujourd'hui, et c'est ce qui le distingue d'une plateforme
+comme YouTube : personne ne possède le podcast.
 
-Un seul dossier vous concerne au quotidien :
+## Pourquoi le format a explosé
 
-```
-src/content/lecons/
-├── module-1/
-│   ├── lecon-1.mdx
-│   └── lecon-2.mdx
-└── module-2/
-    └── lecon-1.mdx
-```
+- **Un contexte technologique favorable** : l'iPod, puis le smartphone dans
+  toutes les poches.
+- **L'écoute mobile** : les transports, le sport, les tâches quotidiennes —
+  autant de moments que la vidéo ne peut pas occuper.
+- **Un accès simplifié** par les plateformes d'écoute, qui ont fait le travail
+  d'annuaire et de recommandation.
+- **Une écoute intime et personnelle**, au casque, souvent seul.
+- **Une expertise qui peut prendre son temps** : le podcast est l'un des rares
+  formats où la durée longue n'est pas un défaut.
 
-Un dossier par module, un fichier par leçon. C'est tout. Les pages, la navigation, la barre de progression et le classement des modules sont déduits de ces fichiers : il n'y a **aucun menu à tenir à jour à la main**.
+## Depuis 2018 : la professionnalisation
 
-Le reste du projet, que vous toucherez rarement :
+- **Montée en qualité éditoriale et sonore** : arrivée de professionnels du son
+  et de l'éditorial, là où le format était surtout affaire d'amateurs éclairés.
+- **Développement de modèles économiques** : podcasts de marque, publicité,
+  sponsors.
+- **Explosion des formats** : crossposts, diversité d'auteurs et de sujets.
 
-| Dossier | Rôle |
-| --- | --- |
-| `src/components/` | Les briques pédagogiques réutilisables — module 2 |
-| `src/styles/` | L'apparence, pilotée par des variables — module 4 |
-| `src/layouts/` | Le gabarit commun à toutes les leçons |
-| `src/pages/` | L'accueil et la route qui fabrique les pages de leçon |
-| `scripts/` | Le générateur de slides et l'application de la charte |
+## Le podcast aujourd'hui, en chiffres
 
-## Deux règles de sécurité
+<Figure
+  src={penetration}
+  alt="Graphique ACPM : 44 % des Français écoutent des podcasts, et 64 % des auditeurs en écoutent au moins une fois par semaine."
+  caption="Taux de pénétration et fréquence de consommation — étude ACPM × CSA, « Les usages du podcast en France »."
+/>
 
-**Ne modifiez jamais `dist/`, `slides/` et `.astro/`.** Ils sont entièrement reconstruits à chaque commande et vos changements y seraient effacés sans avertissement. La source des slides est dans `src/content/`, jamais dans `slides/`.
+- En 2025, près de **44 % des Français écoutent des podcasts**, et **64 % des
+  auditeurs** en écoutent au moins une fois par semaine.
+- L'usage est particulièrement prononcé chez les **18-34 ans**, qui
+  représentent désormais **62 % des auditeurs réguliers**.
+- Un auditeur passe en moyenne **4,3 heures par semaine** à écouter des
+  podcasts.
+- Le **smartphone** reste de loin l'outil privilégié, pour **87 %** des
+  utilisateurs.
 
-**Faites confiance au code, pas à vos souvenirs.** En cas de doute sur un nom de composant ou de champ, la liste qui fait foi est le contenu de `src/components/` et le fichier `src/content.config.ts`.
+Source : [étude ACPM sur les usages du podcast en France](https://www.acpm.fr/Actualites/Toute-l-actualite/Actualites-generales/Nouvelle-etude-ACPM-les-usages-du-podcast-en-France).
 
-## Vérifier que c'est clair
+## Quatre familles, et une zone grise
+
+« Podcast » désigne aujourd'hui des objets très différents. Les distinguer
+n'est pas un exercice d'école : selon la famille dans laquelle vous produisez,
+le coût, le public et les attentes ne sont pas les mêmes.
+
+<Flashcards cards={[
+  {
+    front: "Podcast de replay radio",
+    back: "Le replay d'une émission diffusée en radio. Manu dans le 6/9, La fabrique de l'information, Hondelatte raconte."
+  },
+  {
+    front: "Podcast natif",
+    back: "Un contenu audio qui n'a jamais été diffusé à la radio, et qui n'est pas prévu pour l'être. Émotions, Transfert, Le Floodcast."
+  },
+  {
+    front: "Le replay « internet »",
+    back: "Le replay audio d'un live Twitch ou d'une vidéo YouTube. Underscore_, Game of Roles."
+  },
+  {
+    front: "Le contenu natif décliné en audio",
+    back: "Littéralement l'audio d'une vidéo, publié sur les plateformes d'écoute. HugoDécrypte, Legend, Alice Underground."
+  },
+]} />
+
+Les deux premières familles sont bien identifiées. Les deux suivantes forment
+une **zone grise** que le vocabulaire n'a pas encore tranchée — on parle parfois
+de *vodcast*, et les plateformes les rangent le plus souvent avec les podcasts
+natifs. Cette zone est la plus intéressante à observer : elle occupe une part
+croissante des podcasts créés, et c'est souvent par là que les nouveaux
+producteurs arrivent.
+
+## Quand, où et comment on écoute
+
+- **Seul**, la plupart du temps : c'est le cas de **87 % des répondants**. Le
+  podcast est un format intime, qui obtient une attention exclusive — une
+  situation rare dans le paysage média.
+- **En mobilité** pour près de **6 auditeurs sur 10**, à leur rythme et au
+  moment qu'ils choisissent.
+- **Plutôt court** : la majorité des auditeurs écoutent des formats de moins de
+  quinze minutes. Les plus de 50 ans font exception, davantage enclins aux
+  formats de plus de trente minutes.
+- **En cherchant activement** : **56 % des auditeurs** découvrent régulièrement
+  de nouveaux podcasts, et la découverte est jugée facile par une large
+  majorité d'entre eux.
+
+Cette dernière ligne mérite qu'on s'y arrête. En télévision, une campagne
+arrose large et accepte de tirer à côté. Sur un podcast, c'est presque
+l'auditeur lui-même qui vient chercher le contenu : l'audience est plus petite,
+mais elle est **ciblée et qualifiée**.
+
+## Ce que ça change pour une marque
+
+- **La publicité y est acceptée**, ce qui n'est plus vraiment le cas sur
+  YouTube ou les plateformes de vidéo.
+- **Plus de la moitié des auditeurs** se disent intéressés par l'idée qu'une
+  marque lance son propre podcast, avec un intérêt particulièrement marqué chez
+  les moins de 35 ans.
+- Mais à une condition : la majorité estime que les marques devraient
+  **aborder des sujets qu'elles soutiennent plutôt que parler d'elles-mêmes**.
+- **76 % des auditeurs** estiment que proposer un podcast est un bon moyen de
+  communication pour une marque.
+
+Deux exemples pour rendre ça concret. *Monte le son* est produit par Thomann,
+un vendeur d'instruments de musique : le podcast parle de musique, et son public
+va de lui-même vers un contenu qui a pourtant une visée commerciale. *Salut les
+designers* est produit par l'agence LunaWeb, qui a mobilisé des compétences
+internes pour parler de design plutôt que d'elle-même.
+
+## Vérifier ce qui est resté
 
 <Quiz questions={[
   {
-    question: "Où est enregistrée la progression de l'apprenant ?",
-    options: ["Dans une base de données du serveur", "Dans son propre navigateur", "Dans un fichier du dossier dist/"],
+    question: "De quels deux mots « podcast » est-il la contraction ?",
+    options: ["Pod et castille", "iPod et broadcast", "Podium et cast"],
     answer: 1,
-    explanation: "Elle vit dans le localStorage du navigateur. C'est ce qui permet de se passer de serveur — au prix d'une progression perdue si l'apprenant change de navigateur.",
+    explanation: "iPod, le baladeur d'Apple, et broadcast, « diffusion » en anglais."
   },
   {
-    question: "Quel dossier contient le travail que vous écrivez au quotidien ?",
-    options: ["slides/", "dist/", "src/content/lecons/"],
+    question: "Qu'est-ce qu'un podcast natif ?",
+    options: [
+      "Un podcast produit dans le pays de l'auditeur",
+      "Le replay d'une émission diffusée en radio",
+      "Un contenu audio qui n'a jamais été diffusé à la radio et n'est pas prévu pour l'être"
+    ],
     answer: 2,
-    explanation: "dist/ et slides/ sont des sorties, reconstruites à chaque commande. Y écrire ne sert à rien : tout serait effacé.",
+    explanation: "C'est ce qui le distingue du replay radio, qui est la rediffusion d'une antenne."
   },
   {
-    question: "Que faut-il faire pour qu'une nouvelle leçon apparaisse dans le menu de navigation ?",
-    options: ["Rien : la navigation est déduite des fichiers", "Ajouter une entrée dans un fichier de menu", "Relancer npm install"],
-    answer: 0,
-    explanation: "Navigation, classement des modules et barre de progression sont tous déduits de l'en-tête des fichiers .mdx.",
+    question: "Quelle part des auditeurs écoutent des podcasts au moins une fois par semaine ?",
+    options: ["44 %", "64 %", "87 %"],
+    answer: 1,
+    explanation: "44 % est la part des Français qui écoutent des podcasts ; 87 %, celle qui écoute sur smartphone."
+  },
+  {
+    question: "Qu'attendent majoritairement les auditeurs d'un podcast de marque ?",
+    options: [
+      "Qu'il présente les produits de la marque",
+      "Qu'il aborde des sujets que la marque soutient",
+      "Qu'il soit réservé aux clients de la marque"
+    ],
+    answer: 1,
+    explanation: "Parler de soi est précisément ce que l'audience rejette : elle attend un sujet, pas une plaquette."
   },
 ]} />

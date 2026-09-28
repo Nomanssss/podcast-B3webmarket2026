@@ -1,70 +1,190 @@
 ---
-title: "Les commandes"
-module: "Module 1 - Prendre le template en main"
+title: "Cartographie des acteurs du podcast"
+module: "Module 1 - Découverte et analyse du média podcast"
 moduleOrder: 1
 order: 2
-description: "Sept commandes au quotidien, dont une seule est indispensable."
-slidePoints:
-  - "npm run dev suffit pour écrire : rechargement à chaque enregistrement"
-  - "npm run build produit le site ET valide les en-têtes de leçon"
-  - "npm run bundle assemble le paquet livrable : site + slides"
-  - "npm run brand se lance tout seul avant dev, build et slides"
-  - "npm run reset efface le cours de démonstration pour laisser place au vôtre"
+description: "Qui produit, qui héberge, qui diffuse, qui mesure : l'écosystème dans lequel vous allez travailler."
 ---
 
 import DragMatch from '@components/DragMatch.astro';
-import Flashcards from '@components/Flashcards.astro';
+import Quiz from '@components/Quiz.astro';
 
-Une seule commande est indispensable au démarrage.
+Quand on s'intéresse au podcast, il est important d'avoir une idée de
+l'écosystème dans lequel on évolue. Pourquoi ? Parce que les questions
+arrivent vite, et qu'elles sont toutes des questions d'acteurs :
 
-```bash
-npm run dev
-```
+- Si vous créez un contenu audio demain, comment le produirez-vous ? Avec votre
+  propre matériel, ou en passant commande à un studio ?
+- Qui s'occupe de l'habillage sonore ?
+- Où voulez-vous être diffusé ?
 
-Elle lance un serveur local sur `http://localhost:4321` qui se recharge à chaque enregistrement de fichier. Gardez-la ouverte pendant que vous écrivez : c'est tout ce dont vous avez besoin pour produire du contenu.
+Vouloir faire un podcast et le poser sur les réseaux sociaux juste pour le
+diffuser, quand on est une marque, ne fonctionne presque jamais sans une idée
+minimale de la manière dont ce petit monde est organisé.
 
-## La liste complète
+> **Les frontières entre acteurs sont très poreuses.** Un hébergeur peut être
+> son propre diffuseur et produire ses propres podcasts. Les catégories qui
+> suivent servent à comprendre des **rôles**, pas à ranger des entreprises dans
+> des cases étanches.
 
-| Commande | Quand s'en servir | Ce qu'elle produit |
-| --- | --- | --- |
-| `npm run dev` | En permanence pendant l'écriture | Rien : un serveur local |
-| `npm run build` | Avant de publier | Le site dans `dist/` |
-| `npm run preview` | Pour vérifier le build | Rien : sert `dist/` |
-| `npm run slides` | Pour les présentations | Un PDF par leçon **et par module** |
-| `npm run slides:html` | Pour projeter au navigateur | Les mêmes en HTML |
-| `npm run bundle` | Pour transmettre le cours | `dist/` complet : site + slides |
-| `npm run brand` | Après un changement de charte | Les fichiers de style et les polices |
-| `npm run reset` | Une fois, au tout début | Efface ce cours de démonstration |
+## Les producteurs
 
-Il en existe d'autres, qui ne servent qu'à viser une partie des présentations plutôt que tout régénérer : `slides:lecons`, `slides:modules`, `slides:pptx` et leurs variantes `:html`. Le module 3 y revient.
+Ce sont eux qui fabriquent le podcast. Cinq profils très différents coexistent.
 
-## Deux choses qui surprennent la première fois
+### Les studios de podcast
 
-**`npm run build` est aussi votre validateur.** Il échoue si l'en-tête d'une leçon est invalide — champ obligatoire manquant ou mauvais type. Lancez-le avant de publier, même si vous n'avez pas besoin du site : c'est le seul moment où le template vérifie vos fichiers.
+Binge Audio, Arte Radio, Louie Media, Bababam… Ils produisent directement le
+podcast, et disposent souvent de leur propre arsenal : connaissance du marché,
+studio, moyens de communication. Ils peuvent tout gérer, jusqu'à la diffusion.
+Si vous avez un budget podcast conséquent, et selon l'audience visée, il peut
+être pertinent de vous rapprocher de l'un d'eux.
 
-**`npm run brand` se lance tout seul.** Il est branché en amont de `dev`, `build` et `slides`. Vous n'avez donc quasiment jamais à l'appeler à la main : un simple `npm run dev` suffit après un changement de couleur.
+Les exemples ci-dessus sont de gros studios, mais il en existe de plus petits,
+au niveau local, qui sont tout aussi bons.
 
-**`npm run reset` ne se lance qu'une fois.** Le cours que vous lisez est une démonstration : il occupe `src/content/lecons/`. La commande le supprime et le remplace par une leçon vierge. Elle vous montre la liste des fichiers avant de les effacer et attend que vous tapiez `oui` — mais faites-le en connaissance de cause, ce texte-ci en fait partie.
+### Les radios
 
-## Ce qu'il faut savoir avant de générer des slides
+NRJ, Radio Nova, Radio France… Elles alimentent une large part du replay, et
+produisent aussi des natifs.
 
-L'export en PDF et en PowerPoint **nécessite Chrome ou Chromium installé** sur la machine. L'export HTML, non. Si `npm run slides` échoue en parlant de navigateur, c'est de cela qu'il s'agit — et `npm run slides:html` vous dépanne en attendant.
+### Les médias non audio
 
-## Associer chaque commande à sa sortie
+Le Parisien, Les Échos, Ouest-France… La presse écrite s'est emparée du format,
+souvent pour prolonger ses sujets plutôt que pour les répéter.
+
+### Les entreprises hors du secteur audio
+
+Elles auto-produisent leur podcast sur un budget de communication. *Salut les
+designers*, de l'agence LunaWeb, en est un exemple : l'agence a mobilisé des
+compétences internes plutôt que de sous-traiter. Certaines vont jusqu'à monter
+un studio d'enregistrement alors que ce n'est pas leur métier. Elles
+représentent une part encore modeste de l'écosystème, mais selon le secteur,
+c'est une voie à considérer sérieusement.
+
+### Les indépendants
+
+Si demain vous lancez un podcast avec vos amis et votre propre matériel, vous
+entrez dans cette catégorie. Et si le podcast rencontre son public, la
+collaboration avec des marques devient possible — *Le Floodcast* en est
+l'illustration la plus connue.
+
+## La post-production
+
+C'est le moment où le son devient un objet fini : montage, mixage, habillage.
+On y trouve des studios de composition sonore, des prestataires spécialisés
+comme Geta Sound, et tout l'outillage technique qui va avec. C'est souvent le
+poste que les débutants sous-estiment le plus.
+
+## La diffusion
+
+### Les hébergeurs
+
+Une fois le podcast réalisé, il doit vivre sur un serveur : c'est de là que les
+plateformes iront le chercher. Héberger coûte de l'argent — comme pour la vidéo
+— et chaque hébergeur a ses spécificités. Certains peuvent booster votre
+visibilité moyennant finance, d'autres relèvent d'une logique associative.
+
+- **Ausha** — bonne connexion avec Spotify, propose un accompagnement.
+- **Acast** — peut également accompagner la production.
+- **Transistor** — statistiques détaillées.
+- **Badgeek** — gratuit, associatif.
+- **Vodio**.
+
+Trois cas concrets montrent que le choix dépend surtout du contexte :
+
+- Un podcast dont l'hébergement Transistor est financé par la radio partenaire :
+  on gagne des chiffres d'audience précis sans en supporter le coût.
+- *Salut les designers*, sur une solution interne : peu cher et totalement
+  maîtrisé, mais les métriques fines sont plus difficiles à obtenir.
+- *Parlez-moi de sport*, sur Acast : le client n'avait pas de budget de
+  promotion au départ, mais être déjà sur la plateforme rend le boost plus
+  simple le jour où le budget arrive.
+
+### Les plateformes d'écoute
+
+C'est là que l'auditeur vous trouve.
+
+- **Spotify** domine le marché français, avec environ 40 % de parts de marché,
+  grâce notamment à une stratégie d'acquisition d'exclusivités et de studios de
+  production.
+- **Apple Podcasts** conserve la deuxième position, autour de 30 %, avec une
+  approche plus éditorialisée et le bénéfice de son intégration native sur iOS.
+- **Deezer** suit avec environ 20 %, en misant sur la diversité culturelle et
+  son ancrage français.
+- **YouTube** s'impose progressivement comme un acteur majeur du podcast, porté
+  par son trafic massif et la puissance de son algorithme de recommandation.
+
+## Les curateurs
+
+Ils structurent et professionnalisent le marché : référentiels communs,
+standards de qualité, espaces d'échange. On les croise surtout dans une
+perspective de professionnalisation.
+
+- **Concours et prix** — ils valorisent la création et révèlent les talents
+  émergents. Le palmarès 2025 du meilleur podcast de marque a ainsi distingué
+  *Lauren & Hardy* (Cognac Hardy, Radio K7 Creative) en or, *Et un jour…
+  GAGNER !* (FDJ, Audion) en argent, *Red Reveals* (Generali, Ba-Ba-Bam) en
+  bronze, et mentionné *Elles Font YouTube* saison 3 (YouTube, Louie Media).
+- **Événements** — Paris Podcast Festival, PodParis, PodRennes.
+- **Newsletters et magazines** — Podmust.
+
+## La croissance
+
+Tout ce qui touche à la monétisation et au développement commercial.
+
+- **Régies publicitaires** : elles commercialisent les espaces publicitaires
+  dans les podcasts (Audiomeans, Acast Marketplace…).
+- **Ad tech** : les technologies de publicité programmatique appliquées à
+  l'audio.
+- **Labels et incubateurs** : structures d'accompagnement et de développement.
+- **Monétisation directe** : Patreon, abonnements, contenus premium.
+
+## La mesure et les revenus
+
+Sans mesure, pas d'argument commercial. **Médiamétrie** et l'**ACPM** publient
+les références du marché — l'[ACPM propose un classement public des
+podcasts](https://www.acpm.fr/Les-chiffres/Frequentation-Podcasts/Classements-Podcasts) —
+et votre hébergeur comme les plateformes d'écoute fournissent leurs propres
+statistiques. Côté droits, la **SACEM** et la **SCAM** gèrent la propriété
+intellectuelle des œuvres que vous diffusez, musique d'habillage comprise.
+
+## Retrouver le bon rôle
 
 <DragMatch pairs={[
-  { left: "npm run dev", right: "Un serveur local qui se recharge" },
-  { left: "npm run build", right: "Le site statique dans dist/" },
-  { left: "npm run slides", right: "Un PDF par leçon et par module" },
-  { left: "npm run bundle", right: "Le paquet livrable complet" },
+  { left: "Ausha, Acast, Transistor", right: "Héberger le fichier audio" },
+  { left: "Spotify, Apple Podcasts, Deezer", right: "Faire écouter le podcast" },
+  { left: "Binge Audio, Louie Media", right: "Produire le podcast" },
+  { left: "Audiomeans, Acast Marketplace", right: "Vendre les espaces publicitaires" },
+  { left: "Médiamétrie, ACPM", right: "Mesurer l'audience" },
+  { left: "SACEM, SCAM", right: "Gérer les droits d'auteur" },
 ]} />
 
-## Le vocabulaire à retenir
+## Vérifier ce qui est resté
 
-<Flashcards cards={[
-  { front: "dist/", back: "Le site construit, prêt à héberger. Entièrement reconstruit à chaque build : n'y écrivez jamais." },
-  { front: "slides/", back: "Les présentations générées, plus le thème compilé. Reconstruit lui aussi — la source est dans src/content/." },
-  { front: "socle.config.json", back: "Le seul fichier à régler : le nom du cours, son adresse publique, les mentions légales, trois couleurs, deux polices, et les leçons verrouillées." },
-  { front: "frontmatter", back: "L'en-tête d'une leçon, entre deux lignes de trois tirets. Il renseigne le template sans s'afficher." },
-  { front: "MDX", back: "Du Markdown qui accepte en plus des composants. C'est le format des fichiers de leçon." },
+<Quiz questions={[
+  {
+    question: "À quoi sert un hébergeur de podcast ?",
+    options: [
+      "À enregistrer et monter les épisodes",
+      "À stocker le fichier audio et le rendre disponible aux plateformes d'écoute",
+      "À vendre les espaces publicitaires"
+    ],
+    answer: 1,
+    explanation: "C'est lui qui héberge le fichier et publie le flux que Spotify, Apple ou Deezer viennent lire."
+  },
+  {
+    question: "Quelle plateforme d'écoute domine le marché français ?",
+    options: ["Apple Podcasts", "Spotify", "Deezer"],
+    answer: 1,
+    explanation: "Environ 40 % de parts de marché, devant Apple Podcasts et Deezer."
+  },
+  {
+    question: "Un même acteur peut-il occuper plusieurs rôles de l'écosystème ?",
+    options: [
+      "Non, chaque acteur tient un rôle unique",
+      "Oui, les frontières sont très poreuses : un hébergeur peut diffuser et produire"
+    ],
+    answer: 1,
+    explanation: "Acast, par exemple, héberge, accompagne la production et commercialise de la publicité."
+  },
 ]} />

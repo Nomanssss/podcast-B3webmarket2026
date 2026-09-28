@@ -5,30 +5,30 @@
   "_url": "L'adresse publique du cours, une fois en ligne (ex. https://mon-cours.fr). Elle sert aux liens canoniques, au plan du site (sitemap.xml) et aux balises de partage : sans elle, une page partagée sur un réseau social n'a pas d'URL à annoncer. Laissée vide, le site fonctionne, mais le build le signale.",
   "_lang": "La langue du cours, écrite dans « lang » de chaque page : « fr-FR », « en-GB », « es-ES »… C'est ce que lisent les lecteurs d'écran pour choisir leur prononciation. Le pays est facultatif (« fr » suffit), mais seul il permet d'annoncer la langue aux réseaux sociaux.",
   "site": {
-    "title": "Socle",
-    "tagline": "Un template de cours en ligne en markdown, statique et personnalisable.",
+    "title": "Projet podcast",
+    "tagline": "Comprendre l'écosystème audio, les bases du montage sonore et acquérir les outils éditoriaux pour concevoir un podcast professionel.",
     "lang": "fr-FR",
     "url": "",
     "legal": {
-      "editor": "",
+      "editor": "Alexandre Allain",
       "address": "",
-      "email": "",
-      "publisher": "",
-      "host": ""
+      "email": "alexandre.allain1@proton.me",
+      "publisher": "Alexandre Allain",
+      "host": "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA"
     }
   },
 
   "colors": {
-    "primary": "#4647AE",
-    "text": "#112E81",
-    "page": "#ffffff"
+    "primary": "#8B639B",
+    "text": "#403D88",
+    "page": "#F6EEF9"
   },
 
   "fonts": {
-    "heading": "Stack Sans Headline",
-    "body": "Google Sans"
+    "heading": "Inter",
+    "body": "Inter"
   },
 
   "_locked": "Leçons verrouillées : leur page n'est pas générée (URL en 404, contenu absent de dist/), leurs slides ne sont pas produites, mais elles restent visibles au sommaire, grisées. Pour déverrouiller : retirez la ligne, puis npm run build.",
-  "locked": ["module-4/lecon-4"]
+  "locked": []
 }
