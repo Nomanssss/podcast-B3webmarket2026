@@ -37,8 +37,24 @@ rien casser, un *correctif* répare.
 - **Intégration continue** (GitHub Actions) : à chaque poussée, les types
   sont vérifiés et le site construit.
 - **Ce journal**.
+- **Page « Sources du cours »** (`/sources/`), liée depuis le pied de page :
+  rassemble les sources déclarées dans le nouveau champ `sources` du
+  frontmatter d'une leçon, groupées par leçon. Une leçon verrouillée n'y
+  apparaît pas.
+- **`Timeline` peut désormais se titrer** : une prop `title` nomme la frise,
+  et un champ `heading` sur une étape ouvre un intertitre pour regrouper les
+  étapes qui couvrent plusieurs périodes.
+- **Page « À propos de l'auteur »** (`/a-propos/`), liée depuis le pied de
+  page : une présentation facultative (paragraphe, photo carrée et liens -
+  site personnel, réseaux sociaux…) renseignée dans la nouvelle section
+  `author` de `socle.config.json`. Rien n'est requis, contrairement aux
+  mentions légales. La photo est un chemin dans `public/`, servi tel quel
+  et non optimisé par Astro.
 
 ### Modifié
+
+- **`Timeline` perd le chevron de dépliage**, qui ne rendait pas bien, et
+  gagne un peu d'air entre son titre et la frise.
 
 - `npm run check` **fonctionne sans installation supplémentaire** :
   `@astrojs/check` et `typescript` font désormais partie des dépendances de
