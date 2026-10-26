@@ -11,6 +11,11 @@
 // pour apparaître dans la liste : il montre toutes les mises en page
 // sur une seule série, ce qui évite de modifier un modèle à l'aveugle.
 //
+// Les leçons (src/content/lecons/) sont elles aussi assemblées dans
+// slides/ par build-slides --md-only, et réassemblées à chaque
+// enregistrement : modifier un .slides.md ou une image de src/assets/
+// se voit tout de suite dans le navigateur.
+//
 // Ctrl+C arrête les deux processus.
 // =============================================================
 
@@ -52,11 +57,26 @@ const stageDemo = () => {
 };
 stageDemo();
 
+/**
+ * Les leçons passent par build-slides lui-même, en mode --md-only : même
+ * diapo de titre, mêmes images mises en scène que le vrai build, sans le
+ * rendu PDF qui prendrait des minutes. marp -s rend ensuite les .md.
+ */
+const stageLessons = () => {
+  try {
+    execFileSync('node', [join(ROOT, 'scripts/build-slides.mjs'), '--md-only'], { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] });
+  } catch {
+    // build-slides a déjà dit ce qui n'allait pas : on laisse tourner.
+  }
+};
+stageLessons();
+
 console.log(`
   Aperçu du thème  →  http://localhost:8080
   « 00-modeles »   →  toutes les mises en page sur une seule série
 
   Éditez src/styles/marp/ : le thème se recompile et la page se recharge.
+  Éditez une leçon ou une image : le deck est réassemblé et rechargé.
   Ctrl+C pour arrêter.
 `);
 
@@ -84,6 +104,18 @@ const children = [
 if (existsSync(DEMO)) {
   watch(DEMO, stageDemo);
 }
+
+/**
+ * Un enregistrement déclenche souvent plusieurs événements : on attend
+ * qu'ils se calment avant de réassembler.
+**/
+let lessonsPending = null;
+const onLessonChange = () => {
+  clearTimeout(lessonsPending);
+  lessonsPending = setTimeout(stageLessons, 150);
+};
+watch(join(ROOT, 'src/content/lecons'), { recursive: true }, onLessonChange);
+watch(join(ROOT, 'src/assets'), { recursive: true }, onLessonChange);
 
 /**
  * `sass --watch` ne voit que les fichiers .scss. Or les couleurs et les

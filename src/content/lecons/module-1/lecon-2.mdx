@@ -4,10 +4,19 @@ module: "Module 1 - Découverte et analyse du média podcast"
 moduleOrder: 1
 order: 2
 description: "Qui produit, qui héberge, qui diffuse, qui mesure : l'écosystème dans lequel vous allez travailler."
+sources:
+  - label: "Cartographie des principaux acteurs du podcast en France en 2022 - Cosavostra"
 ---
 
 import DragMatch from '@components/DragMatch.astro';
+import Figure from '@components/Figure.astro';
 import Quiz from '@components/Quiz.astro';
+import carteComplete from '@assets/Cartographie-podcast-1.png';
+import carteProducteurs from '@assets/Cartographie-podcast-1-1.png';
+import carteSoundDesign from '@assets/Cartographie-podcast-2.png';
+import cartePlateformes from '@assets/Cartographie-podcast-3.png';
+import carteHebergeurs from '@assets/Cartographie-podcast-4.png';
+import carteCurateurs from '@assets/Cartographie-podcast-4-1.png';
 
 Quand on s'intéresse au podcast, il est important d'avoir une idée de
 l'écosystème dans lequel on évolue. Pourquoi ? Parce que les questions
@@ -27,9 +36,21 @@ minimale de la manière dont ce petit monde est organisé.
 > suivent servent à comprendre des **rôles**, pas à ranger des entreprises dans
 > des cases étanches.
 
+<Figure
+  src={carteComplete}
+  alt="Cartographie des principaux acteurs du podcast en France en 2022 : des centaines de logos répartis en blocs : curateurs, publicité et monétisation, hébergeurs, plateformes d'écoute, producteurs, sound design, mesure d'audience, incubateurs, labels, propriété intellectuelle et outils techniques."
+  caption="Les principaux acteurs du podcast en France en 2022. Cartographie : Cosavostra, tous droits réservés."
+/>
+
 ## Les producteurs
 
 Ce sont eux qui fabriquent le podcast. Cinq profils très différents coexistent.
+
+<Figure
+  src={carteProducteurs}
+  alt="Zoom sur les producteurs de la cartographie : studios de podcast (Louie, Binge, Bababam…), médias non audios (Le Monde, Le Parisien, Ouest-France…), médias audiovisuels (Radio France, NRJ, RTL…) et les milliers de podcasteurs indépendants."
+  caption="Les producteurs : studios, médias non audios, médias audiovisuels et indépendants."
+/>
 
 ### Les studios de podcast
 
@@ -65,7 +86,7 @@ c'est une voie à considérer sérieusement.
 
 Si demain vous lancez un podcast avec vos amis et votre propre matériel, vous
 entrez dans cette catégorie. Et si le podcast rencontre son public, la
-collaboration avec des marques devient possible — *Le Floodcast* en est
+collaboration avec des marques devient possible : *Le Floodcast* en est
 l'illustration la plus connue.
 
 ## La post-production
@@ -75,20 +96,32 @@ On y trouve des studios de composition sonore, des prestataires spécialisés
 comme Geta Sound, et tout l'outillage technique qui va avec. C'est souvent le
 poste que les débutants sous-estiment le plus.
 
+<Figure
+  src={carteSoundDesign}
+  alt="Zoom sur le bloc Sound Design de la cartographie : Studio Module, Les Belles Fréquences et Getasound."
+  caption="Le sound design, un bloc à part dans la cartographie."
+/>
+
 ## La diffusion
 
 ### Les hébergeurs
 
 Une fois le podcast réalisé, il doit vivre sur un serveur : c'est de là que les
-plateformes iront le chercher. Héberger coûte de l'argent — comme pour la vidéo
-— et chaque hébergeur a ses spécificités. Certains peuvent booster votre
+plateformes iront le chercher. Héberger coûte de l'argent, comme pour la vidéo,
+et chaque hébergeur a ses spécificités. Certains peuvent booster votre
 visibilité moyennant finance, d'autres relèvent d'une logique associative.
 
-- **Ausha** — bonne connexion avec Spotify, propose un accompagnement.
-- **Acast** — peut également accompagner la production.
-- **Transistor** — statistiques détaillées.
-- **Badgeek** — gratuit, associatif.
+- **Ausha** : bonne connexion avec Spotify, propose un accompagnement.
+- **Acast** : peut également accompagner la production.
+- **Transistor** : statistiques détaillées.
+- **Badgeek** : gratuit, associatif.
 - **Vodio**.
+
+<Figure
+  src={carteHebergeurs}
+  alt="Zoom sur les hébergeurs de la cartographie : Triton, Ausha, Audiomeans, Art19, Transistor, Libsyn, Podbean, Captivate, SoundCloud, YouTube, Simplecast, BadGeek, Podomatic et Podcastics."
+  caption="Les hébergeurs. Certains, comme YouTube ou SoundCloud, sont aussi des plateformes d'écoute."
+/>
 
 Trois cas concrets montrent que le choix dépend surtout du contexte :
 
@@ -103,6 +136,12 @@ Trois cas concrets montrent que le choix dépend surtout du contexte :
 ### Les plateformes d'écoute
 
 C'est là que l'auditeur vous trouve.
+
+<Figure
+  src={cartePlateformes}
+  alt="Zoom sur les plateformes d'écoute de la cartographie : Apple Podcasts, Deezer, Spotify, Pocket Casts, Castbox, Radio France, Overcast, Google Podcasts, Audible, Amazon Music, AntennaPod, TuneIn… Acast, Saooti et podCloud débordent sur les hébergeurs."
+  caption="Les plateformes d'écoute. Les pointillés marquent les acteurs à cheval sur plusieurs rôles."
+/>
 
 - **Spotify** domine le marché français, avec environ 40 % de parts de marché,
   grâce notamment à une stratégie d'acquisition d'exclusivités et de studios de
@@ -120,13 +159,19 @@ Ils structurent et professionnalisent le marché : référentiels communs,
 standards de qualité, espaces d'échange. On les croise surtout dans une
 perspective de professionnalisation.
 
-- **Concours et prix** — ils valorisent la création et révèlent les talents
+<Figure
+  src={carteCurateurs}
+  alt="Zoom sur les curateurs de la cartographie : sites web (PodMust, PodMap…), newsletters, podcasts sur le podcast, événements (Paris Podcast Festival, PodRennes…), guides, livres et formations."
+  caption="Les curateurs : sites, newsletters, événements, guides, livres et formations."
+/>
+
+- **Concours et prix** : ils valorisent la création et révèlent les talents
   émergents. Le palmarès 2025 du meilleur podcast de marque a ainsi distingué
   *Lauren & Hardy* (Cognac Hardy, Radio K7 Creative) en or, *Et un jour…
   GAGNER !* (FDJ, Audion) en argent, *Red Reveals* (Generali, Ba-Ba-Bam) en
   bronze, et mentionné *Elles Font YouTube* saison 3 (YouTube, Louie Media).
-- **Événements** — Paris Podcast Festival, PodParis, PodRennes.
-- **Newsletters et magazines** — Podmust.
+- **Événements** : Paris Podcast Festival, PodParis, PodRennes.
+- **Newsletters et magazines** : Podmust.
 
 ## La croissance
 
@@ -142,22 +187,11 @@ Tout ce qui touche à la monétisation et au développement commercial.
 ## La mesure et les revenus
 
 Sans mesure, pas d'argument commercial. **Médiamétrie** et l'**ACPM** publient
-les références du marché — l'[ACPM propose un classement public des
-podcasts](https://www.acpm.fr/Les-chiffres/Frequentation-Podcasts/Classements-Podcasts) —
+les références du marché (l'[ACPM propose d'ailleurs un classement public des
+podcasts](https://www.acpm.fr/Les-chiffres/Frequentation-Podcasts/Classements-Podcasts)),
 et votre hébergeur comme les plateformes d'écoute fournissent leurs propres
 statistiques. Côté droits, la **SACEM** et la **SCAM** gèrent la propriété
 intellectuelle des œuvres que vous diffusez, musique d'habillage comprise.
-
-## Retrouver le bon rôle
-
-<DragMatch pairs={[
-  { left: "Ausha, Acast, Transistor", right: "Héberger le fichier audio" },
-  { left: "Spotify, Apple Podcasts, Deezer", right: "Faire écouter le podcast" },
-  { left: "Binge Audio, Louie Media", right: "Produire le podcast" },
-  { left: "Audiomeans, Acast Marketplace", right: "Vendre les espaces publicitaires" },
-  { left: "Médiamétrie, ACPM", right: "Mesurer l'audience" },
-  { left: "SACEM, SCAM", right: "Gérer les droits d'auteur" },
-]} />
 
 ## Vérifier ce qui est resté
 

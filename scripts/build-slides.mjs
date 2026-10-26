@@ -29,6 +29,7 @@
 //   node scripts/build-slides.mjs --format=html    → HTML (ou pptx)
 //   node scripts/build-slides.mjs --only=lecons    → les leçons seules
 //   node scripts/build-slides.mjs --only=modules   → les modules seuls
+//   node scripts/build-slides.mjs --md-only        → assemble les .md, sans rendu
 //   (SLIDES_FORMAT et SLIDES_ONLY font la même chose en variables)
 //
 // Les deux se combinent : --format=html --only=modules.
@@ -109,6 +110,10 @@ if (!['tout', 'lecons', 'modules'].includes(ONLY)) {
   console.error(`Portée inconnue : "${ONLY}" (attendu : tout, lecons, modules).`);
   process.exit(1);
 }
+// --md-only : n'écrit que les .md assemblés, sans passer par Marp. C'est ce
+// dont l'aperçu en direct a besoin : marp -s rend les .md lui-même.
+const MD_ONLY = process.argv.includes('--md-only');
+
 const DO_LESSONS = ONLY !== 'modules';
 const DO_MODULES = ONLY !== 'lecons';
 
@@ -187,6 +192,7 @@ const ext = FORMAT === 'pptx' ? 'pptx' : FORMAT === 'html' ? 'html' : 'pdf';
 
 /** Rend un .md assemblé avec Marp, dans le format demandé. */
 function render(mdPath, outPath) {
+  if (MD_ONLY) return;
   const args = ['--no-stdin', '--theme', THEME, '--allow-local-files'];
   if (FORMAT_FLAG[FORMAT]) args.push(FORMAT_FLAG[FORMAT]);
   args.push('-o', outPath, mdPath);
@@ -404,7 +410,7 @@ for (const [dir, { label, labels, bodies }] of DO_MODULES ? byModuleDir : []) {
   // Seul le PDF part dans public/ : c'est ce que propose le bouton du
   // site, et lui seul (voir PUBLIC_SLIDES, plus haut). Le HTML, lui,
   // n'existe que pour le paquet livré, où bundle-dist ira le chercher.
-  if (ext === 'pdf') {
+  if (ext === 'pdf' && !MD_ONLY) {
     mkdirSync(PUBLIC_SLIDES, { recursive: true });
     copyFileSync(outPath, join(PUBLIC_SLIDES, `${dir}.pdf`));
   }

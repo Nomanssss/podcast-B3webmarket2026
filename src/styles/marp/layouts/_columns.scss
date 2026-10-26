@@ -174,23 +174,32 @@ section.columns-4 {
   // respiration que le titre vient de perdre. TOUTES les colonnes la
   // reprennent, pas seulement la première - sinon les colonnes ne
   // démarrent plus à la même hauteur, et le décalage saute aux yeux.
+  //
+  // ⚠ Un PADDING, pas une marge : une marge en haut de colonne est
+  // « tronquée » au saut de colonne, et chaque navigateur le fait à sa
+  // façon - l'un garde la marge sous le titre (colonne 1) et la jette après
+  // le saut forcé (colonne 2), d'où un décalage d'une colonne à l'autre ;
+  // le Chrome de Marp CLI la jette partout. Un padding n'est jamais tronqué.
   p:has(> img) {
+    --tile-pad: #{spacing.get("lg")};
+
     position: relative;
     isolation: isolate;
     width: var(--tile);
-    margin: spacing.get("lg") auto spacing.get("lg");
+    margin: 0 auto spacing.get("lg");
+    padding-top: var(--tile-pad);
   }
 
   // L'image posée SOUS son ### n'ouvre aucune colonne - le titre l'a déjà
   // fait. Elle reste collée à lui, comme le veut `break-before: avoid`.
   > h3 + p:has(> img) {
-    margin-top: 0;
+    --tile-pad: 0px;
   }
 
   // Et quand un chapô est là, c'est LUI qui pose l'air sous le titre :
   // les images n'ont plus rien à reprendre.
   > h2 + p:not(:has(> img)) ~ p:has(> img) {
-    margin-top: 0;
+    --tile-pad: 0px;
   }
 
   img {
@@ -205,7 +214,8 @@ section.columns-4 {
     content: "";
     position: absolute;
     z-index: -1;
-    inset: -4% -25% auto auto;
+    // Décalé du padding : le filigrane suit l'image, pas le haut du bloc.
+    inset: calc(var(--tile-pad) - 4%) -25% auto auto;
     width: var(--mark);
     height: var(--mark);
     background-image: logo.logo(colors.$primary);

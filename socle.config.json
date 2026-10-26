@@ -31,13 +31,13 @@
   },
 
   "colors": {
-    "primary": "#8B639B",
-    "text": "#403D88",
-    "page": "#F6EEF9"
+    "primary": "#2563C9",
+    "text": "#14305A",
+    "page": "#EEF4FB"
   },
 
   "fonts": {
-    "heading": "Inter",
+    "heading": "Bricolage Grotesque",
     "body": "Inter"
   },
 

@@ -4,7 +4,8 @@
 //
 // Volontairement générique : les hébergeurs de podcast (Spotify,
 // Ausha, Acast, Ivoox, RSS.com…) fournissent tous une URL d'iframe.
-// Collez cette URL dans `src`.
+// Collez cette URL dans `src`. Un lien de partage Spotify
+// (open.spotify.com/episode/…) est converti tout seul.
 //
 // Usage MDX :
 //   <PodcastEmbed
@@ -22,7 +23,16 @@ interface Props {
   /** Légende optionnelle sous le lecteur. */
   caption?: string;
 }
-const { src, title = 'Lecteur de podcast', height = 152, caption } = Astro.props;
+const { src: rawSrc, title = 'Lecteur de podcast', height = 152, caption } = Astro.props;
+
+/**
+ * Le lien de PARTAGE Spotify (open.spotify.com/episode/…) refuse d'être
+ * affiché dans une iframe : seule l'URL d'intégration (/embed/…) le peut.
+ * C'est pourtant le lien qu'on copie le plus naturellement - on le convertit
+ * donc, en retirant au passage le traceur `?si=`.
+ */
+const spotify = rawSrc.match(/^https:\/\/open\.spotify\.com\/(episode|show)\/([A-Za-z0-9]+)/);
+const src = spotify ? `https://open.spotify.com/embed/${spotify[1]}/${spotify[2]}` : rawSrc;
 ---
 
 <figure class="c-podcast">

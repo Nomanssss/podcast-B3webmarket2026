@@ -344,6 +344,7 @@ Ouvre <http://localhost:8080> et lance deux surveillances :
 
 - `sass --watch` recompile `slides/theme.css` à chaque enregistrement dans `src/styles/` ;
 - `marp --server` sert les decks et **recharge le navigateur** à chaque changement.
+- les leçons de `src/content/lecons/` sont réassemblées dans `slides/` à chaque enregistrement d'un `.slides.md` ou d'une image de `src/assets/` : le deck HTML se met à jour en direct, sans `npm run slides`.
 
 Un deck de démonstration, `slides.demo.md`, est copié dans la liste sous le nom **00-modeles** : il montre toutes les mises en page à la suite. On modifie `src/styles/marp/layouts/_section.scss`, on enregistre, on voit le résultat sur la slide correspondante — sans régénérer un PDF à chaque essai.
 
