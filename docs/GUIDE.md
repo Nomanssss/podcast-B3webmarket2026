@@ -6,17 +6,18 @@ régler la charte, comprendre les styles. Pour démarrer, voir le [README](../RE
 ## Sommaire
 
 1. [Ajouter une leçon](#ajouter-une-leçon)
-2. [Composants disponibles](#composants-disponibles)
-3. [Générer les slides](#générer-les-slides)
-4. [Livrer le cours : `npm run bundle`](#livrer-le-cours--npm-run-bundle)
-5. [Verrouiller une leçon](#verrouiller-une-leçon)
-6. [Identité du site et mentions légales](#identité-du-site-et-mentions-légales)
-7. [Personnaliser l'apparence (rebranding)](#personnaliser-lapparence-rebranding)
-8. [Architecture des styles (ITCSS + BEMIT)](#architecture-des-styles-itcss--bemit)
-9. [Accessibilité](#accessibilité)
-10. [Progression de l'apprenant](#progression-de-lapprenant)
-11. [Faire place nette avec `npm run reset`](#faire-place-nette-avec-npm-run-reset)
-12. [Ce qui est versionné, et ce qui ne l'est pas](#ce-qui-est-versionné-et-ce-qui-ne-lest-pas)
+2. [L'admin : écrire sans éditeur de code](#ladmin--écrire-sans-éditeur-de-code)
+3. [Composants disponibles](#composants-disponibles)
+4. [Générer les slides](#générer-les-slides)
+5. [Livrer le cours : `npm run bundle`](#livrer-le-cours--npm-run-bundle)
+6. [Verrouiller une leçon](#verrouiller-une-leçon)
+7. [Identité du site et mentions légales](#identité-du-site-et-mentions-légales)
+8. [Personnaliser l'apparence (rebranding)](#personnaliser-lapparence-rebranding)
+9. [Architecture des styles (ITCSS + BEMIT)](#architecture-des-styles-itcss--bemit)
+10. [Accessibilité](#accessibilité)
+11. [Progression de l'apprenant](#progression-de-lapprenant)
+12. [Faire place nette avec `npm run reset`](#faire-place-nette-avec-npm-run-reset)
+13. [Ce qui est versionné, et ce qui ne l'est pas](#ce-qui-est-versionné-et-ce-qui-ne-lest-pas)
 
 ---
 
@@ -54,13 +55,131 @@ Validés par Zod (`src/content.config.ts`). Un champ inconnu est **silencieuseme
 | `module` | ✅ | Nom lisible du module. **C'est lui qui regroupe les leçons**, pas le nom du dossier |
 | `order` | ✅ | Ordre de la leçon *à l'intérieur* de son module (1, 2, 3…) |
 | `moduleOrder` | - | Ordre du module sur l'accueil. Absent → modules classés alphabétiquement |
-| `description` | - | Résumé affiché sous le titre sur l'accueil |
-| `cover` | - | Bandeau en tête de leçon. Chemin **relatif au `.mdx`**, optimisé par Astro |
+| `description` | - | Chapô de la leçon, affiché sous son titre |
+| `cover` | - | Image en tête de leçon, recadrée en bandeau. Chemin **relatif au `.mdx`**, optimisé par Astro |
 | `coverAlt` | - | Texte alternatif de la cover (vide si purement décorative) |
-| `slidePoints` | - | Deck de secours. **Ignoré si un `.slides.md` existe** - voir « Générer les slides » |
-| `sources` | - | Sources citées, une liste de `{ label, url? }`. Reprises sur la page « Sources du cours » |
+| `slidePoints` | - | Points-clés : le bloc « En bref » en tête de leçon, et le deck de secours. **Ignoré par les slides si un `.slides.md` existe** - voir « Générer les slides » |
+| `sources` | - | Références citées : listées en fin de leçon et rassemblées sur la page « Sources du cours » - voir ci-dessous |
 
 > Le nom du dossier ne sert qu'à construire l'URL et l'identifiant de la leçon. Le regroupement visible par module vient du champ `module`. Gardez les deux cohérents.
+
+### Citer ses sources
+
+Les références d'une leçon s'écrivent dans son frontmatter, une entrée par source. Seul le titre est obligatoire : un livre n'a pas toujours d'adresse.
+
+```yaml
+sources:
+  - title: "Collections de contenu"
+    author: "Documentation d'Astro"
+    url: "https://docs.astro.build/fr/guides/content-collections/"
+  - title: "Le titre d'un livre"
+    author: "Son autrice"
+```
+
+Elles apparaissent à deux endroits, sans rien recopier : **en fin de leçon**, sous un intertitre « Sources », et sur la page **« Sources du cours »** (`/sources/`), qui réunit celles de toutes les leçons, rangées par module. Le lien vers cette page s'ajoute à la barre du haut et au pied de page dès qu'une leçon cite une source. Celles d'une leçon verrouillée n'y figurent pas : son contenu n'est pas en ligne, ses références n'ont pas à l'annoncer.
+
+Une adresse mal formée (`url` sans `https://`) fait échouer le build : la validation Zod l'attrape avant qu'un lien mort n'arrive en ligne.
+
+---
+
+## L'admin : écrire sans éditeur de code
+
+Avec `npm run dev`, une interface d'écriture est disponible sur **<http://localhost:4321/admin/>**. Elle fait tout ce que ce guide décrit à la main, dans des formulaires : écrire une leçon, ses composants et ses slides, gérer les images, verrouiller une leçon, régler le site.
+
+### Ce qu'elle n'est pas
+
+- **Une page du site.** L'admin n'est jamais construite avec le site : rien d'elle n'arrive dans `dist/`. En local, elle n'existe qu'avec `npm run dev` ; en ligne, seulement si vous la déployez sur Vercel avec ses variables d'environnement (voir « L'admin en ligne », plus bas). Sur un autre hébergeur, `/admin` répond 404.
+- **Une base de données.** Ce qu'elle enregistre, ce sont les fichiers du cours eux-mêmes : les `.mdx`, les `.slides.md`, `socle.config.json`, les images de `src/assets/`. Git reste la seule mémoire du cours.
+- **Un éditeur WYSIWYG.** Le texte reste du Markdown, lisible et diffable. Ce sont les composants - là où le MDX devient du JavaScript - qui ont droit à un formulaire.
+
+### Ce qu'on y fait
+
+| Où | Quoi |
+| --- | --- |
+| **Leçons** → onglet *Page* | l'en-tête en formulaire (titre, ordre, chapô, couverture, points-clés, sources), le texte en Markdown avec une barre d'outils, et chaque composant (Quiz, Timeline, Flashcards, DragMatch, Figure, tableaux) dans un éditeur dédié |
+| **Leçons** → onglet *Slides* | le deck de la leçon, avec un aperçu rendu par Marp dans le thème du cours, et des modèles de slide à insérer |
+| **Sommaire** → titre d'un module | son nom et sa place dans le cours, réécrits dans toutes ses leçons d'un coup (voir ci-dessous) |
+| **Sommaire** → cadenas d'une leçon | la verrouiller ou la rouvrir : effet immédiat, la page passe en 404 ou revient |
+| **Médiathèque** | les images du cours : on les glisse, l'admin les range dans `src/assets/` et écrit les imports |
+| **Réglages** | `socle.config.json` en formulaire : le cours, les mentions légales, l'auteur, la charte |
+
+Le bouton **Voir la page** ouvre la leçon sur le site, qui se recharge à chaque enregistrement (**⌘S** / **Ctrl S**).
+
+### Le module se règle au niveau du module
+
+Le nom d'un module et sa place dans le cours vivent dans l'en-tête de **chacune** de ses leçons (`module` et `moduleOrder`). Les modifier leçon par leçon, c'est risquer qu'une faute de frappe coupe le module en deux sur l'accueil. L'admin ne les montre donc pas dans le formulaire d'une leçon : ils se règlent depuis le titre du module dans le sommaire, et sont réécrits dans toutes ses leçons ensemble - toutes, ou aucune si l'écriture échoue.
+
+La place est un rang : les modules sont renumérotés de 1 à N, sans doublon. Un nom qui suit la convention « Module 3 - … » prend son nouveau numéro ; un nom libre n'est jamais touché. Un nom déjà porté par un autre module est refusé, pour ne pas fusionner deux modules par accident. Le dossier du module, lui, ne change pas : l'adresse des leçons reste la même.
+
+### Ce qui la rend sûre
+
+- **Elle ne réécrit que ce qui change.** Un en-tête inchangé est recopié à l'octet près ; modifier un quiz ne touche qu'au quiz ; `socle.config.json` est réécrit dans son propre style, explications `_…` comprises. Un diff Git après passage dans l'admin ressemble à celui d'un humain.
+- **Elle n'écrase pas une modification faite ailleurs.** Si un fichier a changé depuis son ouverture - dans un éditeur de code, ou par une autre action de l'admin - l'enregistrement est refusé, et c'est à vous de choisir.
+- **Elle vérifie avant d'écrire** ce que le build refuserait : une source sans titre, une adresse sans `https://`, une couleur mal formée.
+- **Une charte refusée ne reste pas en place.** Couleurs et polices relancent `npm run brand` à l'enregistrement ; s'il refuse (police inconnue, pas de réseau pour la télécharger), `socle.config.json` est remis dans son état d'avant. Seul un changement de **police** demande une connexion.
+- **Elle n'écoute que votre machine.** Même avec `npm run dev -- --host`, qui ouvre le site au réseau local, `/admin` répond 403 aux autres appareils. Une écriture doit venir de l'admin elle-même : une page web malveillante ouverte dans le même navigateur ne peut pas écrire. Et aucun chemin reçu ne sort de `src/content/lecons/`, `src/assets/` et `socle.config.json`.
+
+> ⚠️ **L'admin écrit dans les fichiers du dépôt.** Un essai - une leçon verrouillée pour voir, une couleur changée - fait donc partie du prochain commit si vous ne relisez pas le diff. C'est le prix d'un cours sans base de données : `git diff` avant chaque commit, et `git restore <fichier>` pour annuler un essai.
+
+### L'admin en ligne, sur Vercel
+
+En local, l'admin écrit sur le disque. En ligne, elle permet d'éditer le cours **sans avoir le projet sur sa machine** : depuis n'importe quel navigateur, avec un mot de passe.
+
+**Comment ça marche.** Le site reste statique : Vercel le construit depuis `main` et le sert tel quel. Seul `/admin` passe par une fonction (`api/admin.mjs`), qui fait tourner la même admin qu'en local, avec deux différences :
+
+- **les enregistrements sont des commits sur une branche `brouillon`**, par l'API de GitHub - pas sur un disque, qu'une fonction n'a pas. Chaque commit déclenche chez Vercel la construction d'un **aperçu** de cette branche, à sa propre adresse ;
+- **la porte est un mot de passe.**
+
+Un bandeau sous la barre de l'admin dit ce qui attend d'être publié et où en est l'aperçu. **Voir le brouillon** ouvre l'aperçu, **Voir la page** y ouvre la leçon en cours. **Publier** verse le brouillon dans `main` : le site en ligne se met à jour en une à deux minutes. **Abandonner** ramène le brouillon à la version en ligne - définitivement.
+
+#### Mettre en ligne, pas à pas
+
+1. **Le projet Vercel.** Sur <https://vercel.com/new>, importez le dépôt GitHub du cours. Rien à régler : `vercel.json` donne la commande de construction (`npm run vercel-build`), le dossier publié (`dist`) et la fonction de l'admin. La branche de production est `main`.
+2. **Le jeton GitHub.** Sur GitHub → *Settings* → *Developer settings* → *Personal access tokens* → **Fine-grained tokens** → *Generate new token* :
+   - *Repository access* : **Only select repositories**, et seulement le dépôt du cours ;
+   - *Permissions* → *Repository permissions* : **Contents : Read and write**, **Deployments : Read-only** (pour lire l'état des aperçus) ;
+   - une date d'expiration : un an au plus, et un rappel pour le renouveler.
+3. **Le mot de passe.** En local : `npm run admin:password`. La commande demande un mot de passe (12 caractères au moins, sans l'afficher) et donne les deux valeurs à recopier dans Vercel. Le mot de passe lui-même n'est écrit nulle part.
+4. **Les variables d'environnement**, dans Vercel → *Settings* → *Environment Variables*, pour les environnements **Production** et **Preview** :
+
+   | Variable | Valeur |
+   | --- | --- |
+   | `ADMIN_PASSWORD_HASH` | donnée par `npm run admin:password` |
+   | `ADMIN_SESSION_SECRET` | donnée par `npm run admin:password` |
+   | `GITHUB_TOKEN` | le jeton de l'étape 2 |
+   | `GITHUB_REPO` | facultatif : `propriétaire/dépôt`. Par défaut, celui que Vercel déploie |
+   | `ADMIN_DRAFT_BRANCH` | facultatif : le nom du brouillon, `brouillon` par défaut |
+   | `ADMIN_BASE_BRANCH` | facultatif : la branche publiée, `main` par défaut |
+
+5. **Redéployez** (*Deployments* → *Redeploy*) : les variables ne sont lues qu'au déploiement. L'admin répond alors sur `https://votre-cours.fr/admin/`. Une variable manque, et la page le dit - sans jamais afficher leur valeur.
+
+#### Ce qui change en ligne
+
+- **La charte n'est pas régénérée à l'enregistrement** : `npm run brand` ne tourne pas dans une fonction. C'est la construction de l'aperçu qui le relance. Une police inexistante est tout de même refusée à l'enregistrement : l'admin la vérifie auprès de Google Fonts.
+- **Une image envoyée ne dépasse pas 4 Mo**, plafond d'une requête vers une fonction Vercel.
+- **La médiathèque est classée par nom**, et non par date : l'API de GitHub ne donne pas la date d'un fichier sans une requête de plus par image.
+- **L'aperçu des slides** compile le thème dans la fonction. S'il n'y parvient pas, l'onglet *Slides* reste éditable, avec un message à la place de l'aperçu.
+- **Une modification ne part pas tout de suite en ligne** : elle attend dans le brouillon jusqu'à **Publier**. Si quelqu'un pousse du code sur `main` entre-temps, le brouillon le reprend tout seul ; si le même passage d'un fichier a changé des deux côtés, le bandeau le signale, et la fusion se règle dans le dépôt.
+
+#### Sécurité
+
+- **Le jeton GitHub donne le droit d'écrire dans le dépôt** : limitez-le à ce seul dépôt et à ces deux permissions, ne le collez nulle part ailleurs que dans Vercel, et révoquez-le sur GitHub au moindre doute.
+- **Le mot de passe** n'existe qu'en empreinte scrypt. La session tient dans un cookie signé, invisible au JavaScript, envoyé en HTTPS seulement et à `/admin` seulement ; elle dure 12 heures. Changer de mot de passe (`npm run admin:password`, puis remplacer `ADMIN_PASSWORD_HASH`) déconnecte toutes les sessions.
+- **Après cinq mots de passe faux**, une adresse attend quinze minutes. Ce compte vit dans la mémoire de la fonction, que Vercel peut dédoubler : c'est un frein, pas un mur - le mur, c'est un mot de passe long.
+- Les commits de l'admin sont signés au nom du propriétaire du jeton. Leur message dit ce qu'ils font (« Admin : « Les commandes » », « Admin : réglages du cours »).
+
+### Où ça vit dans le code
+
+| Fichier | Rôle |
+| --- | --- |
+| `admin/integration.mjs` | branche l'admin sur le serveur de dev (`astro:server:setup`), et lui fait relire `socle.config.json` à chaque changement |
+| `admin/server/` | l'API : leçons, composants, médiathèque, slides, réglages |
+| `admin/server/store.mjs` | le stockage : le disque en local, une branche GitHub en ligne (`github-store.mjs`) |
+| `admin/server/auth.mjs` | le mot de passe et la session de l'admin en ligne |
+| `api/admin.mjs`, `vercel.json` | l'admin en ligne : la fonction Vercel et ses réécritures |
+| `admin/ui/` | l'interface, en JavaScript natif - seul l'éditeur de texte (CodeMirror) est une dépendance |
+| `admin/test/` | les tests : `npm run test:admin` |
+| `ROADMAP.md` | ce qui est fait, et ce qui reste (créer, déplacer, supprimer une leçon…) |
 
 ---
 
@@ -78,7 +197,7 @@ Tous les composants sont des **`.astro`** : ils s'exécutent au build et ne néc
 | `Timeline.astro` | Frise d'étapes dépliables | `steps`, `title?` (`heading?` par étape, pour grouper) |
 | `Flashcards.astro` | Cartes recto/verso | `cards` |
 | `DragMatch.astro` | Association par glisser-déposer | `pairs` |
-| `ProgressBar.astro` | Jauge segmentée d'un module, un segment par leçon (déjà dans le layout) | `lessonIds`, `label?`, `class?` |
+| `ProgressBar.astro` | Jauge de progression : un segment par leçon (par défaut), ou continue avec `variant="bar"` (celle du cours, dans la barre latérale) | `lessonIds`, `label?`, `variant?`, `hideHeader?`, `class?` |
 
 Forme des props structurées :
 
@@ -155,16 +274,16 @@ Dans tous les cas, les leçons concernées sont **entièrement** retraitées : i
 
 ### La slide de titre est automatique
 
-Ne l'écrivez jamais vous-même : elle est fabriquée depuis le frontmatter du `.mdx` (`title`, `module`, `cover`).
+Ne l'écrivez jamais vous-même : elle est fabriquée depuis le frontmatter du `.mdx` (`title`, `module`, `moduleOrder`, `order`, `description`, `cover`) - un surtitre qui situe la leçon (« Module 1 · Leçon 2 »), le titre, puis le chapô.
 
-Elle porte un **bandeau sur 30 % de la hauteur**, rempli dans cet ordre :
+Le texte occupe la gauche ; à droite, un **panneau d'image sur toute la hauteur** (40 % de la largeur), rempli dans cet ordre :
 
 1. l'image `cover:` de la leçon, si elle en a une ;
 2. sinon **la couverture de son module** — celle de la première leçon du module qui en déclare une, au sens du champ `order` ;
 3. sinon l'image par défaut du projet, si vous en configurez une ;
 4. sinon un aplat de la couleur principale.
 
-Le deuxième niveau évite un deck panaché : illustrer la première leçon d'un module suffit à donner un bandeau à toutes les autres, et à la slide de titre du **PDF de module**, qui suit la même règle. Une leçon qui veut son image à elle la déclare, et sa `cover:` gagne.
+Le deuxième niveau évite un deck panaché : illustrer la première leçon d'un module suffit à donner un panneau à toutes les autres, et à la slide de titre du **PDF de module**, qui suit la même règle. Une leçon qui veut son image à elle la déclare, et sa `cover:` gagne.
 
 L'image par défaut se règle dans `socle.config.json`, avec un chemin relatif à la racine du projet :
 
@@ -178,16 +297,27 @@ L'image par défaut se règle dans `socle.config.json`, avec un chemin relatif �
 
 La clé est facultative : sans elle, on retombe sur l'aplat. Si le fichier indiqué n'existe pas, `npm run slides` le signale et garde l'aplat plutôt que de produire un bandeau vide.
 
-Dans tous les cas l'image est recadrée en `cover` : elle remplit le bandeau et déborde, elle n'est **jamais déformée**.
+Dans tous les cas l'image est recadrée en `cover` : elle remplit le panneau et déborde, elle n'est **jamais déformée**. (La clé de configuration garde son nom historique, `band`.)
 
-Le cadrage appartient à la mise en page, pas au générateur : `layouts/_lead.scss` récupère l'image dans la variable `--background-image` que Marp expose, et la peint dans un `::before`. Il le fait parce que Marp écrit l'image **en style inline** sur la slide, avec ses propres `background-size` et `background-repeat` — aucune feuille de style ne peut la recadrer, d'où le `background-image: none !important` sur la slide et la reprise dans le bandeau. C'est le seul `!important` du projet en dehors de la couche `utilities` (où il est la règle), et c'est la seule façon de battre un style inline.
+Le cadrage appartient à la mise en page, pas au générateur : `layouts/_lead.scss` récupère l'image dans la variable `--background-image` que Marp expose, et la peint dans un `::before`. Il le fait parce que Marp écrit l'image **en style inline** sur la slide, avec ses propres `background-size` et `background-repeat` — aucune feuille de style ne peut la recadrer, d'où le `background-image: none !important` sur la slide et la reprise dans le panneau. C'est le seul `!important` du projet en dehors de la couche `utilities` (où il est la règle), et c'est la seule façon de battre un style inline.
 
-Pour le même bandeau sur une slide écrite à la main, la directive suffit :
+Pour le même panneau sur une slide écrite à la main, la directive suffit :
 
 ```md
 <!-- _class: lead -->
 <!-- _backgroundImage: url('mon-image.png') -->
 ```
+
+### Surtitre, pied de page et pagination
+
+Chaque slide porte, sans rien écrire :
+
+- en **surtitre**, au-dessus du titre, le module (« Module 1 · Prendre le template en main »), précédé du symbole de la marque ;
+- dans la **bande de pied**, le nom du cours et le titre de la leçon à gauche, la pagination « 2 / 12 » à droite.
+
+`build-slides` les écrit dans l'en-tête de chaque deck, en directives Marp `header` et `footer`. Dans le deck d'un module, l'intercalaire de chaque leçon relance le pied de page avec son titre. Les mises en page qui occupent toute la surface (titre, intercalaire, citation, image plein cadre, image côte à côte) n'en ont pas ; sur `image-left` et `image-right`, ils suivent le côté du texte.
+
+Une slide qui doit s'en passer le dit avec les directives locales : `<!-- _header: "" -->`, `<!-- _footer: "" -->`.
 
 ### Trois niveaux, le premier trouvé gagne
 
@@ -284,26 +414,21 @@ S'ouvre dans PowerPoint pour retouche.
 Se projette au navigateur, sans outil.
 ```
 
-Elle s'inscrit dans une **tuile carrée** en `object-fit: contain` : jamais déformée, jamais rognée, et les colonnes restent alignées quelles que soient les proportions des images. La tuile est centrée dans sa colonne (`margin-inline: auto`), le titre et le texte restant alignés à gauche. Le côté du carré se règle par `--tile`, une valeur par variante (260 / 200 / 170 px).
+Elle occupe **toute la largeur de sa colonne**, recadrée en `object-fit: cover` dans un format commun à la variante : jamais déformée, et les colonnes restent alignées quelles que soient les proportions des images. Plus les colonnes sont étroites, plus le format est haut (16:7, 16:9, 4:3), sans quoi l'image ne serait plus qu'un ruban.
 
-Une **tuile sur deux** porte le symbole du projet en filigrane derrière elle (`::before` sur le paragraphe qui encadre l'image).
+Chaque `###` reçoit un **numéro** (01, 02…) en surtitre, posé par un compteur CSS remis à zéro à chaque slide : rien à écrire.
 
 Tous les réglages des colonnes tiennent dans un seul tableau, en tête de `marp/layouts/_columns.scss` :
 
 ```scss
 $variants: (
-  2: (columns: 2, font: 25px, gap: 56px, tile: 260px, mark: 150px),
-  3: (columns: 3, font: 22px, gap: 56px, tile: 200px, mark: 120px),
-  4: (columns: 4, font: 19px, gap: 40px, tile: 170px, mark: 100px),
+  2: (columns: 2, font: 25px, gap: 64px, ratio: math.div(16, 7)),
+  3: (columns: 3, font: 22px, gap: 56px, ratio: math.div(16, 9)),
+  4: (columns: 4, font: 19px, gap: 40px, ratio: math.div(4, 3)),
 );
 ```
 
-`tile` est le côté du carré, `mark` la taille du filigrane. Les blocs CSS sont produits par une boucle en fin de fichier : **ajouter une variante `columns-5` ne demande qu'une ligne de plus** dans ce tableau.
-
-Deux détails de mécanique, si vous y touchez :
-
-- c'est le **paragraphe** qui porte le cadre et le pseudo-élément, pas l'image : un `<img>` est un élément remplacé, il ne peut pas avoir de `::before` ;
-- le fond de la tuile étant opaque, seule la **partie qui déborde** du filigrane se voit. C'est le débordement qui fait l'effet — retirez le fond de la tuile si vous voulez le voir au travers.
+`ratio` est le format des images. Les blocs CSS sont produits par une boucle en fin de fichier : **ajouter une variante `columns-5` ne demande qu'une ligne de plus** dans ce tableau.
 
 **Les deux ordres d'écriture fonctionnent** — image puis titre, ou titre puis image. Une colonne est un *groupe* (image facultative, titre, texte), et c'est son **premier élément** qui ouvre la colonne, quel qu'il soit. Trois exemptions garantissent qu'un groupe ne se fasse jamais couper en deux : le premier groupe de la slide reste dans la première colonne, un titre qui suit son image ne s'en détache pas, et une image qui suit son titre non plus.
 
@@ -344,7 +469,6 @@ Ouvre <http://localhost:8080> et lance deux surveillances :
 
 - `sass --watch` recompile `slides/theme.css` à chaque enregistrement dans `src/styles/` ;
 - `marp --server` sert les decks et **recharge le navigateur** à chaque changement.
-- les leçons de `src/content/lecons/` sont réassemblées dans `slides/` à chaque enregistrement d'un `.slides.md` ou d'une image de `src/assets/` : le deck HTML se met à jour en direct, sans `npm run slides`.
 
 Un deck de démonstration, `slides.demo.md`, est copié dans la liste sous le nom **00-modeles** : il montre toutes les mises en page à la suite. On modifie `src/styles/marp/layouts/_section.scss`, on enregistre, on voit le résultat sur la slide correspondante — sans régénérer un PDF à chaque essai.
 
@@ -374,36 +498,41 @@ Sa structure suit les modèles du thème :
 | Début de chaque leçon | `section` | le titre de la leçon, sur le fond plein de la couleur principale |
 | Le reste | inchangé | le contenu des slides de la leçon, tel quel |
 
-La slide de titre d'une leçon existe donc en deux versions, pour deux rôles : `lead` quand elle **ouvre** le deck de sa leçon — avec la couverture en bandeau et le nom du module en sous-titre — et `section` quand elle n'est plus qu'un **intercalaire** au milieu du deck du module. Le corps qui suit, lui, est assemblé une seule fois et sert aux deux.
+La slide de titre d'une leçon existe donc en deux versions, pour deux rôles : `lead` quand elle **ouvre** le deck de sa leçon — avec la couverture en panneau, un surtitre et le chapô — et `section` quand elle n'est plus qu'un **intercalaire** au milieu du deck du module. Le corps qui suit, lui, est assemblé une seule fois et sert aux deux.
 
-Le site s'en sert : la **dernière leçon de chaque module** affiche un bouton primaire « Télécharger le PDF résumé », à côté de « Marquer comme terminé ».
+Le site s'en sert à deux endroits : chaque **carte de module** de l'accueil propose « Slides du module (PDF) », et **chaque leçon** affiche un bouton « PDF du module » dans son en-tête, à côté de la durée de lecture. Ni l'un ni l'autre n'apparaît tant que le PDF n'a pas été généré.
+
+La page **Slides** (`/presentations/`, dans la barre du haut) les rassemble : une carte par module, le module entier **en ligne** (HTML) et **en PDF**, et chaque leçon à feuilleter seule. Les decks HTML s'ouvrent dans un nouvel onglet : c'est une visionneuse plein écran, sans retour vers le cours. Chaque leçon propose aussi le sien, avec un bouton **« Voir en slides »** dans son en-tête.
+
+Son lien n'apparaît que lorsqu'au moins un deck existe, et chaque bouton que lorsque son fichier existe : `npm run slides` produit les PDF, `npm run slides:html` les HTML. Elle ne remplace pas le sommaire du paquet livré (`dist/slides/index.html`, voir « Livrer le cours »), qui doit fonctionner sans le site - d'où une adresse distincte, `/slides/` étant déjà le dossier des fichiers.
 
 Le module, ici, c'est le **dossier** (`module-1/` → `module-1.pdf`) et non le champ `module:` du frontmatter : il faut un nom de fichier, et « Module 1 - Prendre le template en main » n'en fait pas un bon. Le libellé, lui, titre la première slide et nomme le fichier tel qu'il arrivera dans les téléchargements de l'apprenant. Si un dossier réunit des leçons qui annoncent des `module:` différents, le build le signale et retient le premier.
 
 #### Où vit le fichier, et pourquoi là
 
-`slides/` est un **dossier de travail** à la racine : Astro ne le sert pas en développement et ne le copie pas au build. Seul `npm run bundle` en verse le contenu dans le paquet, à la toute fin. Un bouton pointant vers `slides/` ne mènerait donc nulle part sur `localhost:4321`, ni sur un site publié avec `npm run build`.
-
 `slides/` est un **dossier de travail** à la racine, pas un dossier du site : `astro build` ne le regarde pas, et `dist/` n'en contient rien. Seul `npm run bundle` en verse le contenu dans le paquet, à la toute fin. Un bouton pointant vers `slides/` mènerait donc à un 404 sur tout site publié avec `npm run build`.
 
-`npm run slides` recopie donc chaque PDF de module dans **`public/slides/modules/`** — `public/` étant le dossier dont Astro copie le contenu tel quel dans `dist/`. Le sous-dossier `modules/` reproduit le rangement du paquet, pour que l'URL soit la même partout :
+Les commandes de slides recopient donc ce que le site lie dans **`public/slides/`** — `public/` étant le dossier dont Astro copie le contenu tel quel dans `dist/` :
 
-| | `/slides/modules/module-1.pdf` |
-| --- | --- |
-| `npm run dev` | servi depuis `public/` |
-| `npm run build` | copié dans `dist/` par Astro |
-| `npm run bundle` | idem, puis `bundle-dist` ajoute `lecons/` à côté |
+| | Où | Par |
+| --- | --- | --- |
+| PDF de chaque module | `public/slides/modules/` | `npm run slides` |
+| HTML de chaque module, et ses images | `public/slides/modules/` (+ `assets/`) | `npm run slides:html` |
+| HTML de chaque leçon, et ses images | `public/slides/lecons/` (+ `assets/`) | `npm run slides:html` |
+
+Les sous-dossiers reproduisent le rangement du paquet, pour que l'URL soit la même partout : servie depuis `public/` par `npm run dev`, copiée dans `dist/` par `npm run build`, puis reprise à l'identique par `bundle-dist`. Les images suivent les HTML parce que Marp les cite en chemin relatif (`assets/x.png`) : c'est `scripts/deck-assets.mjs` qui les recopie, pour `build-slides` comme pour `bundle-dist`.
 
 > ⚠️ En développement, Vite sert aussi les fichiers de la **racine du projet** : `/slides/module-1.pdf` y répond, et `/socle.config.json` aussi. C'est une commodité du serveur de dev, absente du site construit — ne vous y fiez pas pour juger si un lien tiendra en production.
 
 Le deck d'un module suit le **format demandé**, comme celui d'une leçon : `npm run slides` en fait un PDF, `npm run slides:html` un HTML projetable. Les deux arrivent dans le paquet, sous `dist/slides/modules/`.
 
-Seul le **PDF** passe en plus dans `public/` : c'est le seul format que le bouton du site propose, et y verser aussi les HTML alourdirait chaque build pour un fichier que rien ne lie. `public/slides/modules/` est dans `.gitignore` — c'est un produit de `npm run slides`.
+Le **PDF d'une leçon** et les PPTX, eux, ne passent pas dans `public/` : rien ne les lie depuis le site, ils alourdiraient chaque build pour rien. `public/slides/` est dans `.gitignore` — c'est un produit des commandes de slides.
 
 Deux garde-fous :
 
-- le bouton n'apparaît **que si le PDF est dans `public/slides/modules/`** au moment où le site se construit. Sur un dépôt où `npm run slides` n'a jamais tourné (il réclame Chrome), il n'y a pas de bouton plutôt qu'un lien mort ;
-- `npm run bundle` génère **les slides avant le site**. Dans l'autre sens, sur un dépôt tout neuf, le site se construirait alors que `public/slides/modules/` est encore vide : aucun bouton, et le paquet livré serait muet là-dessus.
+- un bouton n'apparaît **que si son fichier est dans `public/slides/`** au moment où le site se construit. Sur un dépôt où les slides n'ont jamais été générées, il n'y a pas de bouton plutôt qu'un lien mort ;
+- `npm run bundle` génère **les slides avant le site**. Dans l'autre sens, sur un dépôt tout neuf, le site se construirait alors que `public/slides/` est encore vide : aucun bouton, et le paquet livré serait muet là-dessus.
+- verrouiller une leçon retire aussi son deck de `public/slides/lecons/` à la génération suivante : le site ne sert pas les slides d'une leçon fermée.
 
 ---
 
@@ -432,7 +561,7 @@ dist/
   LISEZ-MOI.txt               comment ouvrir le paquet
 ```
 
-L'ordre compte, et dans les deux sens : les slides sont **générées avant** le site — qui vérifie leur présence pour décider d'afficher le bouton « PDF résumé » — puis **copiées après** lui, `astro build` vidant `dist/` à chaque passage. D'où la séquence de `npm run bundle` : `slides` → `slides:html` → `build` → `bundle-dist`. Ce dernier refuse de tourner si le site n'a pas été construit.
+L'ordre compte, et dans les deux sens : les slides sont **générées avant** le site — qui vérifie leur présence pour décider d'afficher les boutons « PDF du module » et « Voir en slides » — puis **copiées après** lui, `astro build` vidant `dist/` à chaque passage. D'où la séquence de `npm run bundle` : `slides` → `slides:html` → `build` → `bundle-dist`. Ce dernier refuse de tourner si le site n'a pas été construit.
 
 ### Le site a besoin d'un serveur, les slides non
 
@@ -575,17 +704,17 @@ Contrairement aux mentions légales, **rien n'est requis** : `bio` vide n'est pa
 
 ### La version de Socle
 
-Cette même rubrique affiche « construit avec **Socle 1.0.0** », et chaque page du site porte l'information en en-tête :
+Cette même rubrique affiche « construit avec **Socle 1.1.0** », et chaque page du site porte l'information en en-tête :
 
 ```html
-<meta name="generator" content="Socle 1.0.0">
+<meta name="generator" content="Socle 1.1.0">
 ```
 
 C'est la convention qu'emploient Astro ou WordPress. Un cours en ligne dit ainsi de quelle version du template il est issu - la première question qu'on se pose devant un site livré il y a un an qui se comporte bizarrement.
 
 Le numéro vit dans `scripts/config.mjs` (`SOCLE_VERSION`), et **pas** dans `package.json`. La raison tient à ce qu'est ce dépôt : une fois le template dupliqué, `package.json` appartient à l'auteur du cours, qui y met le nom et le numéro de *son* projet. La mention afficherait alors la version du cours en croyant donner celle du template. Les deux numéros disent la même chose au moment du clone, puis suivent chacun leur vie.
 
-Le pied de page, lui, n'en parle pas : « Socle 1.0.0 » sous le pied de page d'un cours ne dit rien à l'apprenant qui le lit. L'information s'adresse à qui reprend le projet ou inspecte la page, pas au lecteur.
+Le pied de page, lui, n'en parle pas : « Socle 1.1.0 » sous le pied de page d'un cours ne dit rien à l'apprenant qui le lit. L'information s'adresse à qui reprend le projet ou inspecte la page, pas au lecteur.
 
 > Pour publier une version de Socle : `SOCLE_VERSION` dans `scripts/config.mjs` **et** `version` dans `package.json`, dans le même commit.
 
@@ -639,27 +768,11 @@ Elle porte `<meta name="robots" content="noindex, follow">` — une page d'erreu
 
 - **la marque**, qui ramène à l'accueil. Ce n'est pas une balise `<img>` mais un fond dessiné par `logo.logotype()` — donc toujours dans la couleur de la charte du moment, et assombrie au survol (voir « Les marques du projet ») ;
 - **le lien vers la page « À propos de l'auteur »** ;
-- **le lien vers les sources du cours** ;
+- **le lien vers les sources du cours**, quand une leçon en cite (voir « Citer ses sources ») ;
 - **le lien vers les mentions légales** ;
 - **la note sur la progression** stockée dans le navigateur : une information de confidentialité, qui a sa place partout et non sur la seule page d'accueil.
 
-Pour ajouter une page annexe (conditions d'utilisation, accessibilité…), dupliquez `mentions-legales.astro` : le gabarit `.c-page` (lien de retour, titre, `.s-richtext`) est fait pour ça, et le lien s'ajoute dans le `<nav>` de `Footer.astro`.
-
-### Les sources du cours
-
-Une leçon peut citer ses sources dans son frontmatter, sans avoir à les recopier à la main en fin de page :
-
-```mdx
----
-title: "Titre de la leçon"
-sources:
-  - label: "MDN - HTMLElement"
-    url: "https://developer.mozilla.org/fr/docs/Web/API/HTMLElement"
-  - label: "Un ouvrage sans lien"
----
-```
-
-`src/pages/sources.astro` les rassemble toutes, groupées par leçon, sur une page unique liée depuis le pied de page. Une leçon **verrouillée** n'y apparaît pas — même parti pris que pour sa propre page, qui n'existe pas non plus (voir « Verrouiller une leçon »).
+Pour ajouter une page annexe (conditions d'utilisation, accessibilité…), dupliquez `mentions-legales.astro` : le gabarit `.c-page` (barre du haut, titre, `.s-richtext`) est fait pour ça, et le lien s'ajoute dans le `<nav>` de `Footer.astro`.
 
 ---
 
@@ -715,10 +828,12 @@ La palette est **monochrome par construction** : les traits, les filets et les f
 
 | Rôle dérivé | Calcul | Sert à |
 | --- | --- | --- |
-| `primary-soft` | `primary` à 12 % | bandeau d'accueil, leçon courante |
-| `surface` | `page` éclairci | cartes, encarts, barre latérale |
-| `surface-muted` | `primary` à 8 % | survols, fonds en creux, code en ligne |
-| `border` | `primary` à 30 % | filets |
+| `primary-soft` | `primary` à 12 % | fonds teintés |
+| `canvas` | `primary` à 4 % | fond des pages-sommaires, barre latérale, « En bref » |
+| `surface` | `page` éclairci | cartes, encarts |
+| `surface-muted` | `primary` à 8 % | bandeau d'accueil, survols, leçon courante, code en ligne |
+| `border` | `primary` à 30 % | filets des champs et des tableaux |
+| `border-soft` | `primary` à 14 % | contour des cartes, séparateurs |
 | `accent` | `primary` | rail de la timeline, pointillés, piste de progression |
 | `text-muted` | `text` à 72 % | légendes, métadonnées |
 | `on-primary` | blanc | texte des boutons |
@@ -881,7 +996,7 @@ Un composant peut régler un objet posé sur lui en surchargeant sa variable, pl
 
 Les couches basses visent des balises nues, donc sans classe. Deux pièges, dont le projet s'est fait prendre :
 
-- **jamais de pseudo-classe sur une balise nue dans `elements/`.** `a:hover` pèse (0,1,1) et l'emporterait sur `.c-home__lesson` (0,1,0) : toutes les cartes, la navigation et les boutons-liens se soulignent au survol. Le soulignement des liens appartient donc au scope du texte rédigé, pas à `elements/`.
+- **jamais de pseudo-classe sur une balise nue dans `elements/`.** `a:hover` pèse (0,1,1) et l'emporterait sur `.c-module__lesson` (0,1,0) : toutes les cartes, la navigation et les boutons-liens se soulignent au survol. Le soulignement des liens appartient donc au scope du texte rédigé, pas à `elements/`.
 - **un scope ne dresse que les balises sans classe** - d'où les `:not([class])` de `scopes/_richtext.scss`. Sans eux, `.s-richtext h3` (0,1,1) écrase `.c-quiz__title` (0,1,0), et `.s-richtext ul` écrase `.o-stack` : un composant déposé dans une leçon héritait du rythme du texte rédigé.
 
 Corollaire côté objets : **aucun objet ne remet `margin: 0` sur lui-même.** Il annulerait l'espace que lui donne un `.o-stack` parent - spécificité égale, mais déclaré après. Ces remises à zéro sont le travail de `generic/_reset.scss`, qui neutralise aussi puces et retraits de listes ; le scope du texte rédigé les réintroduit là où elles ont un sens.
@@ -894,15 +1009,15 @@ Un fichier de composant nomme aussi les éléments qu'il ne style pas, sous form
 
 Il n'y a **aucune animation décorative** dans ce template, et c'est un choix : une chose qui bouge en continu sur une page qu'on lit finit par gêner la lecture. Les états se contentent de renseigner, puis s'arrêtent.
 
-| État | Bouton | Carte de leçon |
+| État | Bouton | Leçon dans une liste |
 | --- | --- | --- |
-| survol | le fond s'assombrit | monte de 2 px, filet coloré, ombre plus marquée, titre en couleur |
-| clic | s'enfonce d'1 px | redescend à sa place |
+| survol | le fond s'assombrit | fond teinté |
+| clic | s'enfonce d'1 px | - |
 | focus clavier | liseré de `generic/_focus.scss` | idem |
 
-Le bouton d'appel de la page d'accueil (`.c-header__cta`) se soulève en plus des mêmes 2 px que les cartes : c'est le geste déjà en place dans le template, pas un effet supplémentaire.
+Le retour au clic passe par `transition-duration: 0s` : un enfoncement qui met 150 ms à démarrer ne se ressent plus comme un appui. Il est neutralisé sur un bouton désactivé (`:not(:disabled):active`).
 
-Le retour au clic passe par `transition-duration: 0s` : un enfoncement qui met 150 ms à démarrer ne se ressent plus comme un appui. Et il est neutralisé sur un bouton désactivé (`:not(:disabled):active`) - sélecteur qui, à (0,3,0), l'emporte au passage sur le survol du bouton d'accueil (0,2,0) : on presse donc bien vers le bas, même en partant de la position soulevée.
+Les jauges et l'anneau de progression, eux, ne s'animent que lorsqu'une leçon est cochée **pendant** la visite : au chargement, ils apparaissent d'emblée à leur valeur. Une jauge qui repartirait de zéro à chaque leçon ouverte serait exactement l'animation décorative qu'on s'interdit.
 
 ### Les marques du projet
 
@@ -937,13 +1052,15 @@ Trois contraintes à connaître :
 - le `#` d'un hexadécimal ouvrirait un fragment d'URL et tronquerait l'image : la fonction l'encode en `%23`, et refuse au build une couleur qu'elle ne sait pas sérialiser ;
 - les SVG stockés diffèrent des originaux sur un point : `viewBox` y remplace `width`/`height`. Sans viewBox, un SVG a une taille intrinsèque et **ignore `background-size`** — la marque resterait à sa taille de départ.
 
-Elles sont appelées à cinq endroits. Sur les slides, dans des pseudo-éléments plutôt qu'en couche de fond : un pseudo-élément accepte une opacité, une rotation, un `mix-blend-mode` ou une transition. Le `z-index: -1` sur une slide qui isole son contexte d'empilement les place au-dessus du fond mais sous le texte.
+Elles sont appelées à sept endroits. Sur les slides, dans des pseudo-éléments plutôt qu'en couche de fond : un pseudo-élément accepte une opacité, une rotation, un `mix-blend-mode` ou une transition. Le `z-index: -1` sur une slide qui isole son contexte d'empilement les place au-dessus du fond mais sous le texte.
 
 | Où | Quoi |
 | --- | --- |
-| `components/_header.scss` | le symbole en filigrane du bandeau d'accueil, dans `::after` |
+| `components/_hero.scss` | le symbole en filigrane du bandeau d'accueil, dans `::after` |
+| `components/_topbar.scss` | le symbole devant le nom du cours, dans la barre du haut |
 | `components/_footer.scss` | le logotype du pied de page, qui s'assombrit au survol |
-| `marp/layouts/_lead.scss` | le logotype en bas à droite, dans `::after` |
+| `marp/layouts/_lead.scss` | le logotype en bas à gauche, dans `::after` |
+| `marp/_base.scss` | le symbole devant le surtitre de chaque slide, dans `header::before` |
 | `marp/layouts/_section.scss` | le symbole en blanc, dans `::before` |
 | `marp/layouts/_statement.scss` | le symbole en bas à gauche, dans `::before` |
 
@@ -998,10 +1115,12 @@ Le lien d'évitement mérite un mot. Au clavier, chaque leçon commence par le s
 Gérée par `src/scripts/progress.ts`, entièrement côté client :
 
 - clé `localStorage` : `mooc:progress`, contenant `{ "module-1/lecon-1": true, … }` ;
-- le bouton **« Marquer comme terminé »** en bas de leçon écrit dans cette clé ;
+- le bouton **« Marquer comme terminée »** en bas de leçon écrit dans cette clé ;
 - chaque écriture émet l'événement `mooc:progress-change`, qui rafraîchit les barres de progression de la page en direct.
 
-Une leçon terminée se signale à trois endroits, tous pilotés par une classe posée en JavaScript : la carte de l'accueil (fond vert et étiquette « Terminé »), la ligne de la barre latérale (fond vert et coche à droite) et la jauge du module, dont le segment de même rang se remplit — puis qui passe au vert et affiche « Terminé » une fois le module bouclé. La coche seule ne suffirait pas : elle est accompagnée d'un texte « Terminé » masqué visuellement (`.u-hidden-visually`), sans quoi l'information n'existerait que pour les voyants.
+Une leçon terminée se signale par sa **pastille** (`components/_status.scss`) : un cercle vide pour une leçon à faire, un cercle et un point pour la leçon en cours, un disque plein coché pour une leçon terminée. On la retrouve devant chaque leçon, sur les cartes de module de l'accueil comme dans la barre latérale. La pastille seule ne suffirait pas : elle est accompagnée d'un texte « (terminée) » masqué visuellement (`.u-hidden-visually`), sans quoi l'information n'existerait que pour les voyants.
+
+La progression se lit aussi en jauges : celle du cours entier en tête de la barre latérale, celle de chaque module sur sa carte, et l'anneau de la carte « Votre progression » de l'accueil. C'est cette carte qui désigne la leçon **à suivre** - la première leçon ouverte pas encore terminée, dans l'ordre du cours - et le bouton du bandeau d'accueil devient « Reprendre » dès la première leçon cochée.
 
 Aucune donnée ne quitte le navigateur : pas de compte, pas de serveur. Corollaire à annoncer aux apprenants - la progression est perdue s'ils changent de navigateur ou vident leur cache.
 
@@ -1035,7 +1154,7 @@ La règle habituelle - « on ne versionne pas ce qu'une commande sait reconstrui
 | `src/styles/generic/_fonts.scss` | les `@font-face` du site |
 | `fonts.lock.json` | la trace de ce qui a été téléchargé - c'est ce qui permet à `npm run brand` de ne rien refaire quand rien n'a changé |
 
-À l'inverse, `public/slides/` — les PDF de module que `npm run slides` publie pour le site — est ignoré : c'est un produit de build comme un autre, et il pèse.
+À l'inverse, `public/slides/` — les decks que les commandes de slides publient pour le site — est ignoré : c'est un produit de build comme un autre, et il pèse.
 
 Un clone compile donc **hors ligne**. Le revers : après un changement de police, ces fichiers apparaissent dans vos diffs. C'est voulu — un changement de charte est un changement de projet, il mérite d'être visible dans l'historique.
 

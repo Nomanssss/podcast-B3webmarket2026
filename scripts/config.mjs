@@ -29,7 +29,7 @@ import { fileURLToPath } from 'node:url';
  * package.json - les deux disent la même chose au moment du clone, puis
  * suivent chacun leur vie.
  */
-export const SOCLE_VERSION = '1.0.0';
+export const SOCLE_VERSION = '1.1.0';
 
 /**
  * Où est socle.config.json ?
@@ -193,7 +193,7 @@ export function missingLegal() {
 }
 
 /**
- * L'auteur du cours : une présentation facultative, une photo et des liens
+ * L'auteur du cours : son nom, une présentation facultative, une photo et des liens
  * (site personnel, réseaux sociaux…), affichés sur /a-propos/. Contrairement
  * aux mentions légales, rien n'est requis - un champ vide n'est pas signalé
  * au build, cette page est un bonus et non une obligation. Un lien sans
@@ -204,7 +204,7 @@ export function missingLegal() {
  * que pour les icônes du site. Une image déjà carrée et de petite taille
  * (400×400 px suffit) évite d'en télécharger une trop lourde.
  *
- * @returns {{ bio: string, photo: string, photoAlt: string, links: { label: string, url: string }[] }}
+ * @returns {{ name: string, bio: string, photo: string, photoAlt: string, links: { label: string, url: string }[] }}
  */
 export function author() {
   const raw = readConfig().author ?? {};
@@ -212,6 +212,7 @@ export function author() {
   const links = Array.isArray(raw.links) ? raw.links : [];
 
   return {
+    name: String(raw.name ?? '').trim(),
     bio: String(raw.bio ?? '').trim(),
     photo: String(raw.photo ?? '').trim(),
     photoAlt: String(raw.photoAlt ?? '').trim(),
