@@ -24,6 +24,10 @@ import { getCourse, pad, pdfFileName } from '../utils/course';
 //
 // Un deck HTML s'ouvre dans un nouvel onglet : c'est une visionneuse
 // plein écran, sans retour vers le cours.
+//
+// Sans PDF (la construction en ligne n'a pas Chrome pour le produire),
+// « Enregistrer en PDF » ouvre le deck HTML sur la fenêtre d'impression :
+// voir `print` dans utils/course.ts.
 // =============================================================
 const modules = (await getCourse()).filter((module) => module.lessons.some((l) => !l.locked));
 const available = modules.filter((module) => module.pdf || module.html).length;
@@ -113,7 +117,7 @@ const { title: siteTitle, lang } = site();
                             href={module.html}
                             target="_blank"
                             rel="noopener"
-                            class:list={['c-button', module.pdf ? null : 'c-button--primary']}
+                            class:list={['c-button', module.pdf || module.print ? null : 'c-button--primary']}
                           >
                             <Icon name="slides" />
                             Voir en ligne
@@ -128,6 +132,18 @@ const { title: siteTitle, lang } = site();
                           >
                             <Icon name="download" />
                             Télécharger le PDF
+                          </a>
+                        )}
+                        {module.print && (
+                          <a
+                            href={module.print}
+                            target="_blank"
+                            rel="noopener"
+                            class="c-button c-button--primary"
+                          >
+                            <Icon name="download" />
+                            Enregistrer en PDF
+                            <span class="u-hidden-visually"> (nouvel onglet, fenêtre d'impression)</span>
                           </a>
                         )}
                       </div>

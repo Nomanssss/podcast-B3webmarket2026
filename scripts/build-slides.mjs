@@ -15,9 +15,9 @@
 // l'ordre. C'est le « PDF résumé » que la dernière leçon du module
 // propose au téléchargement, verrouillées exclues.
 //
-// Il suit le format demandé, comme les decks de leçon : PDF pour le
-// bouton du site, HTML pour le projeter. Seul le PDF passe en plus
-// dans public/ - c'est le seul format que le site propose.
+// Il suit le format demandé, comme les decks de leçon. Le PDF et le
+// HTML passent tous deux dans public/ : le site propose de télécharger
+// l'un et de feuilleter l'autre (ou de l'imprimer en PDF, à défaut).
 //
 // Prérequis : le thème doit être compilé (npm run slides:theme).
 //
@@ -318,6 +318,24 @@ if (cleanedModules > 0) {
 const moduleDecks = [];
 const publishedModules = [];
 
+// Le PDF d'un module réclame Chrome, qu'une construction en ligne (Vercel)
+// n'a pas. Le deck HTML, lui, s'imprime : Marp prévoit une feuille
+// d'impression, une slide par page. Ouvert avec « ?imprimer », il lance
+// donc la fenêtre d'impression du navigateur, d'où l'on choisit
+// « Enregistrer en PDF ». C'est le lien que le site propose quand le
+// vrai PDF n'a pas été généré.
+const PRINT_HOOK = `<script>
+if (new URLSearchParams(location.search).has('imprimer')) {
+  addEventListener('load', () => setTimeout(() => print(), 400));
+}
+</script>`;
+
+function addPrintHook(file) {
+  const html = readFileSync(file, 'utf8');
+  if (html.includes("has('imprimer')")) return;
+  writeFileSync(file, html.replace(/<\/body>/i, `${PRINT_HOOK}\n</body>`));
+}
+
 for (const [dir, { label, labels, bodies }] of DO_MODULES ? byModuleDir : []) {
   // Deux libellés dans un même dossier : on prend le premier, mais on le
   // dit. Silencieux, le PDF s'intitulerait d'après une leçon au hasard.
@@ -353,6 +371,7 @@ for (const [dir, { label, labels, bodies }] of DO_MODULES ? byModuleDir : []) {
   const outPath = join(OUT_DIR, `${dir}.${ext}`);
   console.log(`→ ${dir}  (${ext}, module)`);
   render(mdPath, outPath);
+  if (ext === 'html') addPrintHook(outPath);
   moduleDecks.push(outPath);
 
   // Le PDF et le HTML partent dans public/ : le site propose les deux

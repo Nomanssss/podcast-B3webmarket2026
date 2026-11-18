@@ -47,6 +47,12 @@ export interface CourseModule {
   pdf: string | null;
   /** L'adresse du même deck en HTML, s'il a été généré par `npm run slides:html`. */
   html: string | null;
+  /**
+   * À défaut de PDF (la construction en ligne n'a pas Chrome pour le
+   * produire) : le deck HTML ouvert sur la fenêtre d'impression, d'où
+   * l'on enregistre le module en PDF. Null si un vrai PDF existe.
+   */
+  print: string | null;
 }
 
 /**
@@ -138,13 +144,16 @@ export async function getCourse(): Promise<CourseModule[]> {
 
   return sorted.map(([name, lessons], index) => {
     const dir = moduleDirOf(lessons[0].id);
+    const pdf = published('modules', `${dir}.pdf`);
+    const html = published('modules', `${dir}.html`);
     return {
       name,
       shortName: shortModuleName(name),
       number: index + 1,
       dir,
-      pdf: published('modules', `${dir}.pdf`),
-      html: published('modules', `${dir}.html`),
+      pdf,
+      html,
+      print: pdf || !html ? null : `${html}?imprimer`,
       lessons: lessons.map((entry, i) => {
         const locked = isLocked(entry.id);
         return {

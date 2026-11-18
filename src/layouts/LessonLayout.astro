@@ -202,6 +202,20 @@ const { lang } = site();
                   </a>
                 )
               }
+              {
+                currentModule.print && (
+                  <a
+                    href={currentModule.print}
+                    target="_blank"
+                    rel="noopener"
+                    class="c-button c-button--small"
+                  >
+                    <Icon name="download" size={16} />
+                    PDF du module
+                    <span class="u-hidden-visually"> (nouvel onglet, fenêtre d'impression)</span>
+                  </a>
+                )
+              }
             </div>
           </header>
 

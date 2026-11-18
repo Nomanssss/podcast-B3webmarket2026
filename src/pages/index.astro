@@ -48,7 +48,7 @@ const open = openLessons(modules);
 const firstLesson = open[0];
 
 const lessonCount = modules.reduce((sum, module) => sum + module.lessons.length, 0);
-const hasPdf = modules.some((module) => module.pdf);
+const hasPdf = modules.some((module) => module.pdf || module.print);
 const hasDecks = hasPdf || modules.some((module) => module.html);
 
 // Titre et accroche : réglés dans socle.config.json, section « site ».
@@ -198,6 +198,13 @@ const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`;
                       >
                         <Icon name="download" size={16} />
                         Slides du module (PDF)
+                      </a>
+                    )}
+                    {module.print && (
+                      <a href={module.print} target="_blank" rel="noopener" class="c-module__pdf">
+                        <Icon name="download" size={16} />
+                        Slides du module (PDF)
+                        <span class="u-hidden-visually"> (nouvel onglet, fenêtre d'impression)</span>
                       </a>
                     )}
                   </article>
