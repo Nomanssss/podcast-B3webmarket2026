@@ -21,13 +21,12 @@
   "_author": "Présentation facultative de l'auteur du cours, affichée sur /a-propos/ : son nom (name, repris aussi sur la slide de fin des présentations), un paragraphe (bio), une photo carrée (photo, un chemin dans public/ - ex. « /photos/auteur.jpg ») et des liens optionnels (site personnel, réseaux sociaux…), chacun sous la forme { \"label\": \"…\", \"url\": \"…\" }. Rien n'est requis - contrairement aux mentions légales, un champ vide n'est pas signalé au build.",
   "author": {
     "name": "Alexandre Allain",
-    "bio": "Bonjour ! Je suis l'auteur de ce cours. J'aime transmettre ce que j'apprends, et Socle est l'outil que j'ai construit pour le faire sans dépendre d'une plateforme.\n\nCe paragraphe est un exemple - remplacez-le par votre propre présentation dans « author.bio ».",
-    "photo": "/photos/auteur-test.jpg",
+    "bio": "Podcasteur depuis près de 10 ans, je co-anime Azerty, un podcast consacré aux cultures numériques et à leurs enjeux. Je suis également développeur web, spécialisé dans l’éco-conception et l’accessibilité numérique.",
+    "photo": "/photos/1666692205217.jpg",
     "photoAlt": "",
     "links": [
-      { "label": "Site personnel", "url": "https://exemple.fr" },
-      { "label": "Mastodon", "url": "https://exemple.fr/@vous" },
-      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/exemple" }
+      { "label": "Bluesky", "url": "https://bsky.app/profile/alexandreallain.resonance.bzh" },
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/alexandre-allain-4a2592151/" }
     ]
   },
 
@@ -43,5 +42,5 @@
   },
 
   "_locked": "Leçons verrouillées : leur page n'est pas générée (URL en 404, contenu absent de dist/), leurs slides ne sont pas produites, mais elles restent visibles au sommaire, grisées. Pour déverrouiller : retirez la ligne, puis npm run build - ou cliquez sur le cadenas de la leçon dans l'admin (/admin/, avec npm run dev).",
-  "locked": []
+  "locked": ["module-3/lecon-1", "module-3/lecon-2", "module-3/lecon-3", "module-3/lecon-4", "module-4/lecon-1", "module-4/lecon-2", "module-4/lecon-3", "module-4/lecon-4"]
 }

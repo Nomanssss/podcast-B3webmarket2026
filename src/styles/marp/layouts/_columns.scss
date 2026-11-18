@@ -56,9 +56,9 @@
  *     ### HTML
  *     La structure : titres, paragraphes, liens.
  *
- *   Elle occupe toute la largeur de la colonne, recadrée (`object-fit:
- *   cover`) dans un format commun à la variante : les colonnes restent
- *   alignées quelles que soient les proportions des images.
+ *   Elle s'inscrit dans une tuile carrée (`object-fit: contain`), ce qui
+ *   aligne les colonnes quelles que soient les proportions des images.
+ *   Derrière une tuile sur deux, le symbole de la marque en filigrane.
 **/
 
 /*******************************************************************************
@@ -66,11 +66,11 @@
 *******************************************************************************/
 
 @use "sass:map";
-@use "sass:math";
 @use "sass-rem" as rem;
 @use "../../settings/colors";
 @use "../../settings/spacing";
 @use "../../settings/typography";
+@use "../../tools/logo";
 
 /*******************************************************************************
  * Layout
@@ -87,16 +87,16 @@
  *   font     taille du corps de texte - à resserrer quand les colonnes
  *            rétrécissent, sinon la mesure devient illisible
  *   gap      gouttière entre les colonnes
- *   ratio    format des images - plus les colonnes sont étroites, plus
- *            l'image doit être haute pour rester lisible
+ *   tile     côté de la tuile carrée des images
+ *   mark     taille du filigrane (le symbole derrière une tuile sur deux)
  *
  * Ajouter une variante `columns-5` : une ligne de plus dans ce tableau, rien
  * d'autre - les blocs CSS sont produits par la boucle en fin de fichier.
 **/
 $variants: (
-  2: (columns: 2, font: 25px, gap: 64px, ratio: math.div(16, 7)),
-  3: (columns: 3, font: 22px, gap: 56px, ratio: math.div(16, 9)),
-  4: (columns: 4, font: 19px, gap: 40px, ratio: math.div(4, 3)),
+  2: (columns: 2, font: 25px, gap: 64px, tile: 260px, mark: 200px),
+  3: (columns: 3, font: 22px, gap: 56px, tile: 200px, mark: 170px),
+  4: (columns: 4, font: 19px, gap: 40px, tile: 170px, mark: 100px),
 ) !default;
 
 /**
@@ -168,8 +168,10 @@ section.columns-4 {
   h3 {
     margin-top: 0;
     margin-bottom: spacing.get("xs");
-    font-size: 1.3em;
+    font-size: 1.2em;
     break-after: avoid;
+    // Le numéro (::before) et le titre ne se séparent jamais.
+    break-inside: avoid;
     counter-increment: column;
 
     // Le numéro de la colonne, en surtitre du titre.
@@ -188,28 +190,106 @@ section.columns-4 {
   // respiration que le titre vient de perdre. TOUTES les colonnes la
   // reprennent, pas seulement la première - sinon les colonnes ne
   // démarrent plus à la même hauteur, et le décalage saute aux yeux.
+  //
+  // ⚠ Un PADDING, pas une marge : une marge en haut de colonne est
+  // « tronquée » au saut de colonne, et chaque navigateur le fait à sa
+  // façon - l'un garde la marge sous le titre (colonne 1) et la jette après
+  // le saut forcé (colonne 2), d'où un décalage d'une colonne à l'autre ;
+  // le Chrome de Marp CLI la jette partout. Un padding n'est jamais tronqué.
   p:has(> img) {
-    margin: spacing.get("lg") 0 spacing.get("md");
+    --tile-pad: #{spacing.get("lg")};
+
+    position: relative;
+    isolation: isolate;
+    width: var(--tile);
+    margin: 0 auto spacing.get("md");
+    padding-top: var(--tile-pad);
   }
 
   // L'image posée SOUS son ### n'ouvre aucune colonne - le titre l'a déjà
   // fait. Elle reste collée à lui, comme le veut `break-before: avoid`.
   > h3 + p:has(> img) {
-    margin-top: 0;
+    --tile-pad: 0px;
   }
 
   // Et quand un chapô est là, c'est LUI qui pose l'air sous le titre :
   // les images n'ont plus rien à reprendre.
+  // Le chapô mange aussi de la hauteur : la tuile rétrécit d'autant, sinon
+  // la colonne 1 déborde et pousse son texte dans la colonne suivante.
   > h2 + p:not(:has(> img)) ~ p:has(> img) {
-    margin-top: 0;
+    --tile-pad: 0px;
+
+    width: calc(var(--tile) * 0.7);
   }
 
   img {
     display: block;
     width: 100%;
-    aspect-ratio: var(--ratio);
-    object-fit: cover;
+    aspect-ratio: 1;
+    object-fit: contain;
     border-radius: spacing.radius("lg");
+  }
+
+  // Le filigrane : le symbole de la marque derrière une tuile sur deux.
+  p:has(> img):nth-child(odd of p:has(> img))::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    // Décalé du padding : le filigrane suit l'image, pas le haut du bloc.
+    inset: calc(var(--tile-pad) - 4%) -25% auto auto;
+    width: var(--mark);
+    height: var(--mark);
+    background-image: logo.logo(colors.$primary);
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.1;
+    transform: rotate(38deg);
+  }
+
+  // UNE ICÔNE plutôt qu'une image : un fichier dont le nom commence par
+  // `icon-` (src/assets/icons/icon-*.svg) ne prend pas la grande tuile.
+  // Une pastille teintée, calée à gauche au-dessus du numéro, sans filigrane.
+  p:has(> img[src*="icon-"]) {
+    width: auto;
+    margin: 0 0 spacing.get("lg");
+  }
+
+  // `:nth-child(n)` ne sert qu'à passer devant la règle du filigrane.
+  p:has(> img[src*="icon-"]):nth-child(n)::before {
+    content: none;
+  }
+
+  img[src*="icon-"] {
+    width: rem.convert(60px);
+    padding: rem.convert(15px);
+    background: color-mix(in srgb, #{colors.get("primary")} 10%, transparent);
+    border-radius: spacing.radius();
+  }
+
+  // Une slide à icônes passe en GRILLE, pas en colonnes CSS.
+  //
+  // ⚠ Firefox (et Zen, qui en dérive) ignore `break-before: column` : il
+  // répartit le contenu des colonnes par hauteur, et une icône de plus
+  // suffit à faire glisser les blocs d'une colonne à l'autre. La grille
+  // range chaque élément sur SA ligne - icône, titre, texte - et chaque
+  // nouvelle icône ouvre la colonne suivante. Même rendu partout.
+  //
+  // D'où une convention stricte pour ces slides : par colonne, une icône,
+  // un `###`, UN paragraphe.
+  &:has(> p > img[src*="icon-"]) {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-template-rows: repeat(4, auto) 1fr;
+    align-content: start;
+    column-gap: var(--gap);
+
+    > h2 { grid-area: 1 / 1 / 2 / -1; }
+    > h2 + p:not(:has(> img)) { grid-area: 2 / 1 / 3 / -1; }
+    > p:has(> img[src*="icon-"]) { grid-row: 3; }
+    > h3 { grid-row: 4; }
+    // Dans une grille, les marges ne fusionnent plus : celle du
+    // paragraphe s’ajouterait à celle du titre.
+    > h3 + p { grid-row: 5; margin-top: 0; }
   }
 
   p,
@@ -241,10 +321,14 @@ section.columns-4 {
 **/
 @each $name, $variant in $variants {
   section.columns-#{$name} {
-    --ratio: #{map.get($variant, ratio)};
+    --tile: #{rem.convert(map.get($variant, tile))};
+    --mark: #{rem.convert(map.get($variant, mark))};
+
+    --cols: #{map.get($variant, columns)};
+    --gap: #{rem.convert(map.get($variant, gap))};
 
     column-count: map.get($variant, columns);
-    column-gap: rem.convert(map.get($variant, gap));
+    column-gap: var(--gap);
     font-size: rem.convert(map.get($variant, font));
   }
 }

@@ -20,6 +20,32 @@ Le podcast qui vous motive, par Giropharm
 ![Azerty](https://i.scdn.co/image/ab67656300005f1f6b61a5308cd4bba40faa0bc0) 
 ### AZERTY
 L'émission qui reconnecte
+![](../../../assets/vodcast.webp)
+
+
+---
+
+<!-- _class: image-full -->
+
+![bg brightness:1 contain](../../../assets/pitch-ton-podcast-1.jpg)
+
+---
+
+<!-- _class: image-full -->
+
+![bg brightness:1 contain](../../../assets/pitch-ton-podcast-3.jpg)
+
+---
+
+<!-- _class: image-full -->
+
+![bg brightness:1 contain](../../../assets/pitch-ton-podcast-4.jpg)
+
+---
+
+<!-- _class: image-full -->
+
+![bg brightness:1 contain](../../../assets/pitch-ton-podcast-7.jpg)
 
 ---
 
@@ -54,7 +80,7 @@ L'émission qui reconnecte
 <!-- _class: image-left -->
 <!-- _backgroundImage: url('https://i0.wp.com/vipzone.fr/wp-content/uploads/2025/07/Mehdi-Maizi-1024x996.jpeg?resize=1024%2C996&ssl=1') -->
 
-## Depuis 2018 : une professionnalisation du domaine
+## Depuis 2018 : un secteur professionnel
 
 - Montée en qualité éditoriale et sonore : arrivée de professionnel du son, de l’éditorial
 

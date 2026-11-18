@@ -290,8 +290,9 @@ section > header {
   font-size: rem.convert(16px);
   font-weight: typography.$bold;
   line-height: 1.2;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  // En casse normale (choix du cours) : l'interlettrage large des
+  // capitales n'a plus lieu d'être.
+  letter-spacing: 0.01em;
   color: colors.get("primary");
 
   &::before {

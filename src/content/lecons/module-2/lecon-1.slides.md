@@ -1,3 +1,6 @@
+<!-- _class: image-right -->
+<!-- _backgroundImage: url('../../../assets/unsplash-ecoute.jpg') -->
+
 ## Trois questions pour chaque écoute
 
 - **À qui s’adresse ce podcast ?** Âge, centres d’intérêt, contexte d’écoute

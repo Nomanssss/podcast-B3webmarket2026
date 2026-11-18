@@ -58,7 +58,7 @@ import {
   tags,
 } from './vendor/codemirror.js';
 import { h } from './dom.js';
-import { slidesExtension } from './slides-editor.js';
+import { slidesExtension, blockSpacer } from './slides-editor.js';
 
 /**
  * @typedef {{ name: string, start: number, end: number, editable: boolean, props: any }} Component
@@ -313,9 +313,9 @@ class CardWidget extends WidgetType {
 
   toDOM() {
     const { label, render, onEdit, onDelete } = this.card;
-    return h(
+    return blockSpacer(h(
       'div',
-      { class: 'card-widget', contenteditable: 'false' },
+      { class: 'card-widget' },
       h('div', { class: 'card-widget__body' }, render()),
       h(
         'div',
@@ -329,7 +329,7 @@ class CardWidget extends WidgetType {
           onclick: onDelete,
         }, '✕')
       )
-    );
+    ));
   }
 
   // Les clics sur la carte sont pour ses boutons, pas pour l'éditeur.

@@ -77,8 +77,7 @@ a.button { text-decoration: none; }
   color: #fff;
   font-size: 0.75em;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
 }
 
 .bar__lesson {
@@ -187,8 +186,7 @@ a.button { text-decoration: none; }
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
 }
 
 /* Le titre d'un module est le bouton qui ouvre son réglage. */
@@ -967,13 +965,21 @@ button.media:hover { border-color: var(--brand); }
 .format--plain .format__button,
 .format--plain .format__separator { display: none; }
 
+/* --- Blocs posés dans le texte ------------------------------ */
+
+/* L'espacement d'un bloc (carte, bandeau de slide, vignette) vit en
+   PADDING sur son enveloppe : CodeMirror mesure un bloc sans ses marges,
+   et une marge verticale décalait chaque clic placé en dessous. */
+.block-spacer { padding: 6px 20px; }
+.block-spacer:has(> .slide-band) { padding: 18px 20px 8px; }
+.block-spacer:has(> .slide-image) { padding: 4px 20px; }
+
 /* --- Cartes de composants, dans le texte --------------------- */
 
 .card-widget {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 6px 20px;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-left: 4px solid var(--brand);
@@ -1125,9 +1131,9 @@ button.media:hover { border-color: var(--brand); }
 /* Le bandeau d'une slide : là où le texte disait « --- ». */
 .slide-band {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin: 18px 20px 8px;
   padding: 6px 10px;
   border-radius: 6px;
   background: color-mix(in srgb, var(--brand) 10%, var(--surface));
@@ -1162,9 +1168,9 @@ button.media:hover { border-color: var(--brand); }
 /* L'image de fond d'une slide, à la place de sa directive. */
 .slide-image {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin: 4px 20px;
   padding: 6px 10px;
   border: 1px dashed var(--line);
   border-radius: 6px;
@@ -1181,7 +1187,7 @@ button.media:hover { border-color: var(--brand); }
 
 .slide-image__label {
   display: flex;
-  flex: 1;
+  flex: 1 1 8em;
   flex-direction: column;
   min-width: 0;
 }
@@ -1194,6 +1200,22 @@ button.media:hover { border-color: var(--brand); }
 }
 
 .slide-hidden { display: block; height: 0; }
+
+/* Le curseur du filtre sombre d'une image ![bg …]. */
+.slide-image__filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.slide-image__filter input { width: 90px; accent-color: var(--brand); }
+
+.slide-image__value {
+  min-width: 3.5em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
 
 .format--slides { align-self: stretch; }
 
@@ -1292,7 +1314,6 @@ button.media:hover { border-color: var(--brand); }
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.7rem;
-  text-transform: uppercase;
   color: #fff;
   background: var(--brand);
   vertical-align: middle;

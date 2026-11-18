@@ -1,11 +1,5 @@
-<!-- _class: section -->
-
-## Typologies de contenus audio
-
----
-
 <!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/couverture.jpg') -->
+<!-- _backgroundImage: url('../../../assets/solo-podcasting.jpg') -->
 
 ## Le podcast solo (monologue)
 
@@ -15,12 +9,10 @@
 
 - **Intérêt marketing** : positionnement expert, personal branding
 
-*Renverser la table, La tête dans les nuages, Culture générale, Vulgaire*
-
 ---
 
-<!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/vodcast.webp') -->
+<!-- _class: image-left -->
+<!-- _backgroundImage: url('../../../assets/a98fb7dc-6721-4511-994b-65468cb5d13a-orig.jpg') -->
 
 ## Le podcast conversationnel
 
@@ -30,12 +22,10 @@
 
 - **Intérêt marketing** : fort engagement communautaire
 
-*Un bon moment, Le Floodcast, 4 Quarts d’heure, Le MouseCast*
-
 ---
 
 <!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/couverture.jpg') -->
+<!-- _backgroundImage: url('../../../assets/ab6772ab000015beb9515fca914088eb1caa4931.jpg') -->
 
 ## Le podcast émission / table ronde
 
@@ -45,12 +35,10 @@
 
 - **Intérêt marketing** : positionnement comme référence
 
-*Les Informés, Monte le son, Spoilers*
-
 ---
 
-<!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/vodcast.webp') -->
+<!-- _class: image-left -->
+<!-- _backgroundImage: url('../../../assets/a2repv5tgfajxga4imynzruwpq.jpg') -->
 
 ## Le podcast interview
 
@@ -60,12 +48,7 @@
 
 - **Intérêt marketing** : diffusion simplifiée, positionner sa marque comme média de référence
 
-*Legend, Les interviews de HugoDécrypte*
-
 ---
-
-<!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/couverture.jpg') -->
 
 ## Le podcast narratif ou documentaire
 
@@ -75,12 +58,10 @@
 
 - **Intérêt marketing** : réputation, toucher un autre public
 
-*Le code a changé, AZERTY, Odyssée*
-
 ---
 
 <!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/vodcast.webp') -->
+<!-- _backgroundImage: url('../../../assets/silencio.jpg') -->
 
 ## Le podcast fiction
 
@@ -92,8 +73,8 @@
 
 ---
 
-<!-- _class: image-right -->
-<!-- _backgroundImage: url('../../../assets/couverture.jpg') -->
+<!-- _class: image-left -->
+<!-- _backgroundImage: url('../../../assets/41avn0wwill-sl500.jpg') -->
 
 ## Le podcast témoignage
 

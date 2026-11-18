@@ -96,8 +96,7 @@ section.lead {
     margin: 0 0 rem.convert(24px);
     font-size: rem.convert(17px);
     font-weight: typography.$bold;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     color: colors.get("primary");
   }
 

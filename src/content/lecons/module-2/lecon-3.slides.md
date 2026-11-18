@@ -1,3 +1,6 @@
+<!-- _class: image-right -->
+<!-- _backgroundImage: url('../../../assets/unsplash-carnet.jpg') -->
+
 ## Le conducteur
 
 - Le **squelette** de l’émission : le plan de son découpage

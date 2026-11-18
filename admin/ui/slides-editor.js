@@ -104,6 +104,19 @@ export function analyzeSlides(state) {
 // Les bandeaux, les vignettes
 // -------------------------------------------------------------
 
+/**
+ * Enveloppe un bloc posé dans le texte. L'espacement autour du bloc se
+ * met en PADDING sur cette enveloppe, jamais en marge sur le bloc :
+ * CodeMirror mesure la hauteur des blocs sans leurs marges, et chaque
+ * pixel oublié décale d'autant la correspondance entre un clic et la
+ * position dans le texte.
+ *
+ * @param {HTMLElement} block
+ */
+export function blockSpacer(block) {
+  return h('div', { class: 'block-spacer', contenteditable: 'false' }, block);
+}
+
 class SlideBand extends WidgetType {
   /**
    * @param {number} index Le rang de la slide dans le texte (0 : la première).
@@ -128,9 +141,12 @@ class SlideBand extends WidgetType {
     // La slide de titre est fabriquée depuis l'en-tête : la première du
     // texte est donc la n° 2, comme dans l'aperçu et le PDF.
     const number = this.index + 2;
-    return h(
+    // Le conteneur porte l'espacement (en padding) : CodeMirror mesure
+    // un bloc sans ses marges, et une marge verticale décalerait chaque
+    // clic placé sous le bandeau - le curseur tombait une ligne trop bas.
+    return blockSpacer(h(
       'div',
-      { class: 'slide-band', contenteditable: 'false' },
+      { class: 'slide-band' },
       h('span', { class: 'slide-band__label' }, `Slide ${number}`),
       h(
         'label',
@@ -151,7 +167,7 @@ class SlideBand extends WidgetType {
           known ? null : h('option', { value: this.layout, selected: true }, `Autre : ${this.layout}`)
         )
       )
-    );
+    ));
   }
 
   ignoreEvent() {
@@ -165,27 +181,32 @@ class ImageChip extends WidgetType {
    * @param {'directive' | 'bg'} kind
    * @param {string} url
    * @param {SlideOptions} options
+   * @param {string} [bgOptions] Les options d'un `![bg …]` (« brightness:0.35 », « right:40% »).
    */
-  constructor(index, kind, url, options) {
+  constructor(index, kind, url, options, bgOptions = '') {
     super();
     this.index = index;
     this.kind = kind;
     this.url = url;
     this.options = options;
+    this.bgOptions = bgOptions;
   }
 
   /** @param {ImageChip} other */
   eq(other) {
-    return other.index === this.index && other.kind === this.kind && other.url === this.url;
+    return other.index === this.index && other.kind === this.kind && other.url === this.url && other.bgOptions === this.bgOptions;
   }
 
   /** @param {EditorView} view */
   toDOM(view) {
-    return h(
+    return blockSpacer(h(
       'div',
-      { class: 'slide-image', contenteditable: 'false' },
+      { class: 'slide-image' },
       this.options.thumb(this.url),
       h('span', { class: 'slide-image__label' }, 'Image de la slide', h('small', {}, this.url.split('/').pop() ?? this.url)),
+      // Le filtre ne se règle que sur un `![bg …]` : la directive
+      // `_backgroundImage` d'image-left/right n'a pas d'options.
+      this.kind === 'bg' ? filterControl(view, this.index, this.bgOptions) : null,
       h(
         'button',
         {
@@ -198,12 +219,70 @@ class ImageChip extends WidgetType {
         },
         'Changer'
       )
-    );
+    ));
   }
 
   ignoreEvent() {
     return true;
   }
+}
+
+/**
+ * Le curseur du filtre sombre d'une image `![bg …]` : à 0 % l'image est
+ * telle quelle, à 100 % elle est noire. C'est le filtre Marp
+ * `brightness:` vu à l'envers (filtre 65 % = `brightness:0.35`, le
+ * réglage par défaut du plein cadre), écrit dans les options de l'image à
+ * côté des autres (`right:40%`…) qu'il laisse en place. À 0 %, l'option
+ * disparaît : le fichier reste tel qu'on l'aurait écrit à la main.
+ *
+ * @param {EditorView} view
+ * @param {number} index
+ * @param {string} bgOptions
+ */
+function filterControl(view, index, bgOptions) {
+  const match = bgOptions.match(/(?:^|\s)brightness(?::([\d.]+%?))?(?=\s|$)/);
+  // Une valeur en % est ramenée à 0-1 ; `brightness` seul vaut 1.5 chez
+  // Marp (un éclaircissement) : le filtre sombre est alors à 0.
+  let brightness = 1;
+  if (match?.[1] !== undefined) brightness = match[1].endsWith('%') ? parseFloat(match[1]) / 100 : parseFloat(match[1]);
+  if (!Number.isFinite(brightness)) brightness = 1;
+  const percent = Math.round((1 - Math.min(Math.max(brightness, 0), 1)) * 100);
+
+  const output = h('output', { class: 'slide-image__value' }, `${percent} %`);
+  return h(
+    'label',
+    { class: 'slide-image__filter', title: 'Assombrit l\'image, pour qu\'un texte blanc s\'y lise' },
+    h('span', {}, 'Filtre'),
+    h('input', {
+      type: 'range',
+      min: '0',
+      max: '100',
+      step: '5',
+      value: String(percent),
+      // Le chiffre suit le curseur ; le fichier n'est réécrit qu'au lâcher.
+      oninput: (/** @type {any} */ e) => {
+        output.textContent = `${e.target.value} %`;
+      },
+      onchange: (/** @type {any} */ e) => setFilter(view, index, Number(e.target.value) / 100),
+    }),
+    output
+  );
+}
+
+/**
+ * @param {EditorView} view
+ * @param {number} index
+ * @param {number} filter Entre 0 (aucun) et 1 (noir).
+ */
+function setFilter(view, index, filter) {
+  const slide = analyzeSlides(view.state)[index];
+  const bg = slide?.bg;
+  if (!bg) return;
+  const kept = bg.options.split(/\s+/).filter((o) => o && !/^brightness(?::|$)/.test(o));
+  if (filter > 0) kept.push(`brightness:${Number((1 - filter).toFixed(2))}`);
+  const options = kept.join(' ');
+  const insert = `![bg${options ? ` ${options}` : ''}](${bg.url})`;
+  view.dispatch({ changes: { from: bg.line.from, to: bg.line.to, insert } });
 }
 
 /** Une directive `_class` cachée : le bandeau la montre déjà. */
@@ -251,7 +330,7 @@ export function slidesExtension(options) {
       }
       if (slide.bg) {
         ranges.push(
-          Decoration.replace({ widget: new ImageChip(index, 'bg', slide.bg.url, options), block: true }).range(slide.bg.line.from, slide.bg.line.to)
+          Decoration.replace({ widget: new ImageChip(index, 'bg', slide.bg.url, options, slide.bg.options), block: true }).range(slide.bg.line.from, slide.bg.line.to)
         );
       }
     });

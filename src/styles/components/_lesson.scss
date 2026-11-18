@@ -225,8 +225,7 @@ $topbar: rem.convert(global.$topbar-height);
           font-size: typography.size("xs");
           font-weight: typography.$semibold;
           line-height: typography.leading("tight");
-          text-transform: uppercase;
-          letter-spacing: 0.07em;
+          letter-spacing: 0.01em;
           color: colors.get("text-muted");
           border-radius: spacing.radius("sm");
           cursor: pointer;
@@ -366,8 +365,7 @@ $topbar: rem.convert(global.$topbar-height);
         font-family: typography.family("body");
         font-size: typography.size("xs");
         font-weight: typography.$bold;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.01em;
         color: colors.get("primary");
       }
 
