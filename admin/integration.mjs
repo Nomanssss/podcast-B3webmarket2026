@@ -12,7 +12,8 @@
 // le reste passe à Astro sans avoir été touché.
 // =============================================================
 
-import { resolve } from 'node:path';
+import { resolve, relative, sep } from 'node:path';
+import { spawn } from 'node:child_process';
 import { createHandler } from './server/handler.mjs';
 import { CONFIG_FILE } from './server/settings.mjs';
 
@@ -43,7 +44,70 @@ export default function admin() {
           server.environments.ssr?.hot.send('astro:content-changed', {});
           server.environments.client?.hot.send({ type: 'full-reload', path: '*' });
         });
+
+        // Les decks HTML que sert la page Slides (public/slides/) sont des
+        // fichiers générés : modifier une leçon ou ses slides, dans l'admin
+        // ou à la main, ne les touchait pas, et la consultation en ligne
+        // montrait l'ancienne version jusqu'au prochain `npm run slides:html`.
+        // On les régénère donc d'eux-mêmes, quelques instants après la
+        // dernière modification (≈ 4 s). Le PDF, qui réclame Chrome et
+        // plusieurs minutes, reste une commande à lancer à la main.
+        const decks = deckRebuilder(logger);
+        server.watcher.on('change', decks.onFile);
+        server.watcher.on('add', decks.onFile);
+        server.watcher.on('unlink', decks.onFile);
       },
+    },
+  };
+}
+
+/**
+ * Régénère les decks HTML (comme `npm run slides:html`) quand change ce dont les decks sont faits :
+ * les leçons et leurs slides, les images, le thème Marp, la configuration.
+ * Une rafale d'enregistrements ne donne qu'une génération ; une
+ * modification arrivée pendant la génération en relance une après.
+ *
+ * @param {import('astro').AstroIntegrationLogger} logger
+ */
+function deckRebuilder(logger) {
+  const ROOT = process.cwd();
+  const SOURCES = ['src/content/lecons/', 'src/assets/', 'src/styles/marp/', 'slides.demo.md', 'socle.config.json'];
+  const SASS = resolve(ROOT, 'node_modules/.bin/sass');
+  let timer = null;
+  let running = false;
+  let again = false;
+
+  const run = () => {
+    if (running) {
+      again = true;
+      return;
+    }
+    running = true;
+    // `npm run slides:html` sans son `npm run brand` : celui-ci réécrit
+    // src/styles/marp/_fonts.scss à chaque passage, ce qui relancerait
+    // la génération, sans fin. Le thème est recompilé, puis les decks.
+    const child = spawn(
+      `"${SASS}" src/styles/marp/theme.scss slides/theme.css --load-path=node_modules --style expanded --no-source-map && "${process.execPath}" scripts/build-slides.mjs --format=html`,
+      { cwd: ROOT, stdio: 'ignore', shell: true }
+    );
+    child.on('close', (code) => {
+      running = false;
+      if (code === 0) logger.info('Slides HTML régénérées (page Slides à jour).');
+      else logger.warn(`Slides HTML : la génération a échoué (code ${code}) - lancez npm run slides:html pour voir l'erreur.`);
+      if (again) {
+        again = false;
+        run();
+      }
+    });
+  };
+
+  return {
+    /** @param {string} file */
+    onFile(file) {
+      const rel = relative(ROOT, file).split(sep).join('/');
+      if (!SOURCES.some((source) => rel === source || rel.startsWith(source))) return;
+      clearTimeout(timer);
+      timer = setTimeout(run, 800);
     },
   };
 }
