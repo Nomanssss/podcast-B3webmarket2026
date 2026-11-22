@@ -117,3 +117,16 @@
 <!-- _class: statement -->
 
 > Le succès d’un podcast repose sur l’alignement entre le format, les objectifs, les ressources et l’authenticité de la marque
+
+
+
+---
+
+## Première ébauche
+
+Prenez un temps pour notez vos premières idées. Quels types de podcast ? Quels sujet ?
+
+- Créez un premier pitch
+- Cherchez des podcasts "comparables au votre"
+- Échanger entre vous
+- Les podcasts doivent être individuel

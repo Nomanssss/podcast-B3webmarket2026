@@ -125,12 +125,12 @@ Ironie, étonnement, complicité : le texte se joue autant qu’il se lit.
 
 ---
 
-## Exercice d’écriture
+## L'écriture continue !
 
-À partir de votre concept de podcast :
+À partir de ce qui à été vu, continuer d'étoffer la première ébauche
 
-1. Rédigez le **conducteur** d’un épisode : séquences et durées
+- Commencer à rédiger la fiche explicative
 
-2. Écrivez **l’introduction** de l’épisode, comme vous la diriez
+- Commencer à imaginer votre trailer
 
-3. Passez-la au **test de la lecture à voix haute**, puis réécrivez-la
+- Échangez entre-vous pour éprouver vos idées
