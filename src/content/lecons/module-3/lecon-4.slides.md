@@ -58,24 +58,61 @@ Resserrer la dynamique. La voix reste intelligible dans le métro comme dans une
 
 ---
 
-## Les outils utiles
+## Des outils pour traiter le son
 
 | Outil | Usage |
 | --- | --- |
+| Adobe Podcast | Nettoyer une voix, en ligne |
+| Auphonic | Niveler et viser le bon volume |
+| Youlean Loudness Meter | Mesurer les LUFS dans Reaper |
+| Mediabits | Visualiser le spectre audio |
 | Looperman | Boucles pour un jingle |
-| Artlist | Musiques sous licence |
-| YouTube Studio | Bibliothèque audio libre de droits |
-| Adobe Podcast | Nettoyage de la voix |
-| Mediabits | Spectre audio |
 
 ---
 
-## Exercice
+<!-- _class: statement -->
 
-À partir de l’enregistrement de votre groupe :
+> Libre de droits ne veut pas dire sans conditions : un podcast de marque est un usage commercial
 
-1. **Monter** une séquence de 3 minutes dans Reaper
+---
 
-2. **Mixer** : voix équilibrées, musique sous la voix, autour de -16 LUFS
+## Lire une licence
 
-3. **Exporter** en MP3, 320 kbps, et réécouter sur téléphone
+| Licence | Ce qu’elle permet |
+| --- | --- |
+| **CC0** | Tout, sans crédit |
+| **CC BY** | Tout, en créditant l’auteur |
+| **CC BY-NC** | Non commercial seulement : à éviter pour une marque |
+| **CC BY-ND** | Pas de modification : ni couper, ni mixer |
+
+On note chaque son utilisé : nom, auteur, lien, licence.
+
+---
+
+## Banques de sons : bruitages et ambiances
+
+| Banque | Conditions |
+| --- | --- |
+| **BBC Sound Effects** | Usage éducatif, avec crédit. Commercial payant |
+| **Freesound** | Licence propre à chaque son |
+| **La Sonothèque** | Gratuit quand la fiche l’indique |
+| **Sonniss, GDC Bundle** | Commercial autorisé, sans crédit |
+| **Pixabay** | Commercial autorisé, sans crédit |
+
+---
+
+## Banques de musique
+
+| Banque | Conditions |
+| --- | --- |
+| **Bibliothèque audio YouTube** | Crédit parfois obligatoire |
+| **Pixabay Musique** | Commercial autorisé, sans crédit |
+| **Free Music Archive** | Licence propre à chaque morceau |
+| **Incompetech** | CC BY : crédit obligatoire |
+| **Musopen** | Classique, domaine public |
+
+---
+
+<!-- _class: statement -->
+
+> Tous les liens sont dans la leçon écrite, avec les offres payantes (Uppbeat, Artlist). On relit la licence au moment du téléchargement.
