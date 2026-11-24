@@ -10,10 +10,12 @@
 
 ## Le micro
 
+![](../../../assets/shure-sm-58-26.jpg)
 ### Dynamique
 
 Robuste, peu sensible, capte surtout ce qui est proche. Idéal dans une pièce non traitée ou en extérieur.
 
+![](../../../assets/11669583-800.jpg)
 ### Statique
 
 Plus précis, plus sensible, capte aussi la pièce et ses défauts. Demande un lieu calme.
