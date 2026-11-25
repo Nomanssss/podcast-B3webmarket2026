@@ -162,3 +162,17 @@ Les grands thèmes, oui. La liste exacte des questions, non : elle invite aux r�
 - Aller chercher ce qui n’est pas dans la plaquette : une **anecdote**, un **doute**, un **échec**
 
 - La marque veut relire ? D’accord pour **vérifier les faits**, en fixant dès le départ ce qui peut être modifié
+
+---
+
+## Exercice : commencez l’écriture de votre podcast
+
+À partir du travail éditorial de la dernière fois (ligne éditoriale, conducteur) :
+
+1. Écrivez la **question** qui tient votre premier épisode, et son **accroche**
+
+2. Complétez le **conducteur** : le rôle de chaque séquence dans la trame
+
+3. Si votre format accueille un invité, rédigez sa **grille d’entretien**
+
+4. Commencez à **rédiger** l’épisode, et testez-le à voix haute

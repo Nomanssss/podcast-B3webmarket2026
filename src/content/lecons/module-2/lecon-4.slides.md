@@ -184,17 +184,3 @@ Une trame par épisode, une pour la saison
 <!-- _class: statement -->
 
 > Si une séquence n’a pas de rôle dans la trame, elle n’a peut-être pas sa place
-
----
-
-## Exercice : la trame de votre épisode
-
-À partir de votre conducteur :
-
-1. Écrivez la **question** qui tient votre épisode, en une phrase
-
-2. Rédigez **trois accroches** : une scène, une question, un extrait. Lisez-les à voix haute
-
-3. Ajoutez la colonne **« Rôle dans la trame »** au conducteur
-
-4. Écrivez la **dernière phrase** de l’épisode
